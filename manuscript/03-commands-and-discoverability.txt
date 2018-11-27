@@ -1,0 +1,351 @@
+# Commands & Discoverability
+
+When using PowerShell, the majority of the text you type into a console or script file will be PowerShell commands of some sort, instead of external executables.
+For this reason, it's useful to become familiar with PowerShell's `Verb-Noun` syntax, approved verbs, and some of the most common commands.
+
+## Anatomy of a Command
+
+In Powershell every command follows the format `Verb-Noun`.
+For example:
+
+- `Get-Item`
+- `Set-Item`
+- `New-Item`
+- `Remove-Item`
+
+Those are all real commands and they do roughly what you think they do - get an item, set an item's value, create a new item, delete an item.
+
+There's a [canonical list](https://docs.microsoft.com/en-us/powershell/developer/cmdlet/approved-verbs-for-windows-powershell-commands) of approved verbs which PowerShell commands use.
+This helps to build a context that makes understanding a command _without_ running it easier.
+If you know what the verb means and the noun is clear, you have a pretty good guess at what's going on.
+You wouldn't expect that a `Get-SomeObject` command would do anything but retrieve information, for example.
+
+T> For the rest of this workshop, you may want to keep the list of approved verbs open.
+
+{exercise, id: get-verb}
+
+### Exercise 1: Get-Verb
+
+You can retrieve the available verbs (though not their meanings) from the PowerShell prompt:
+
+```powershell
+Get-Verb
+```
+
+You should see results like these:
+
+```text
+Verb   Group
+----   -----
+Add    Common
+Clear  Common
+Close  Common
+Copy   Common
+Enter  Common
+...
+```
+
+? Is there a verb for approving?
+
+A) Yes
+b) No
+
+? How many security verbs are there?
+
+! 6
+
+{/exercise}
+
+In addition to the verbs there's a few core commands that you should know and we're going to cover in this workshop:
+
+- `Get-Command`
+- `Get-Help`
+- `Select-Object`
+
+{aside}
+
+#### Case Sensitivity
+
+PowerShell is not itself case sensitive, so don't worry *too* much about getting the casing correct.
+In PowerShell, we mostly use [PascalCase](http://wiki.c2.com/?PascalCase).
+
+{/aside}
+
+## Get-Command
+
+So we know that we're going to need to run commands in Powershell.
+We also know that PowerShell use a predictable `Verb-Noun` structure for those commands.
+But what we _don't_ know yet is how to find a command we might want to run.
+
+For that we use `Get-Command`, whose [documentation can be found here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-command?view=powershell-6).
+
+We can use `Get-Command` to return the list of all available commands in our PowerShell session.
+We can also filter those commands by their _type_, name, verb, noun, or several other options.
+
+{aside}
+
+#### Types of Commands
+
+Commands have several types:
+
+- Alias
+- Application
+- Cmdlet
+- Function
+
+For our purposes, the differences aren't *super* important.
+Cmdlets are PowerShell commands defined in C# code, functions are defined in PowerShell themselves, and aliases are names that map to cmdlets or functions.
+
+Applications are executables files that are on the Path and can be called from PowerShell.
+You can call applications that `Get-Command` doesn't show, but you'll need to specify the full path to them.
+
+{/aside}
+
+When we do this, we're passing a **parameter** to the command.
+This is the most common way we're going to use commands at the prompt, by passing one or more parameters to the command.
+
+With that in mind, time for an exercise!
+
+{exercise, id: using-parameters}
+
+## Exercise 2: Using Parameters
+
+### No Parameters
+
+First, run `Get-Command` without any parameters:
+
+```powershell
+Get-Command
+```
+
+Your results should look like this:
+
+```text
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Alias           Add-ProvisionedAppxPackage                         3.0        Dism
+Alias           Add-ProvisioningPackage                            3.0        Provisioning
+Alias           Add-TrustedProvisioningCertificate                 3.0        Provisioning
+Alias           Apply-WindowsUnattend                              3.0        Dism
+Alias           Disable-PhysicalDiskIndication                     2.0.0.0    Storage
+Alias           Disable-StorageDiagnosticLog                       2.0.0.0    Storage
+Alias           Enable-PhysicalDiskIndication                      2.0.0.0    Storage
+Alias           Enable-StorageDiagnosticLog                        2.0.0.0    Storage
+Alias           Export-VMCheckpoint                                2.0.0.0    Hyper-V
+Alias           Flush-Volume                                       2.0.0.0    Storage
+...
+```
+
+? Are there any commands for managing local users?
+
+A) Yes
+b) No
+
+? What command would you use to create a new local user?
+
+! New-LocalUser
+
+### A Single Parameter
+
+You can also run `Get-Command with a parameter, as below:
+
+```powershell
+Get-Command -Verb Trace
+Get-Command -verb TrAce
+```
+
+First, let's use the `Verb` parameter to filter for only those commands with the `Trace` verb - it's not used very much, so the list should be small.
+
+? What happens if you instead specify `traze` or `traces`?
+
+a) `traze` fails but `traces` succeeds
+b) `traze` succeeds but `traces` fails
+c) Both succeed
+D) Both fail
+
+? What if you specify `tra*`?
+
+a) An error is shown
+B) `Trace-Command` is returned
+c) No output is returned
+
+### Multiple Parameters
+
+We can also filter for only those commands whose noun is `Command` and use the `TotalCount` parameter to only return the first three commands our query finds as in the example below.
+This will return all of the commands on our system that match - note that these commands include different sources.
+
+```powershell
+Get-Command -Noun Command -TotalCount 3
+```
+```text
+CommandType     Name                Version    Source
+-----------     ----                -------    ------
+Cmdlet          Get-Command         3.0.0.0    Microsoft.PowerShell.Core
+Cmdlet          Invoke-Command      3.0.0.0    Microsoft.PowerShell.Core
+Cmdlet          Measure-Command     3.1.0.0    Microsoft.PowerShell.Utility
+```
+
+? What happens if you omit the `TotalCount` parameter?
+
+A) It returns all of the valid commands
+b) It returns only one command
+c) It errors
+d) Nothing changes
+
+? How many results do you get back with the `TotalCount` parameter omitted?
+
+! 6 ... 10
+
+? What happens if you specify a verb in addition to the noun?
+
+a) It restricts the results to only those which don't use that verb
+B) It restricts the results to only those which do use that verb
+c) It errors
+
+? How many results do you get back if you specify the `Verb` parameter with a value of `Get` in addition to the `Noun` parameter with a value of `Command`?
+
+! 1 ; One
+
+### Filtering Parameters
+
+But what if we don't know the exact noun being used?
+In that case, we can filter on `Name` and try to narrow our options down.
+
+If, for example, we want to see what commands are available for interacting with images, we could use wildcards (`*`) in conjunction with the `Name` parameter.
+
+W> #### Parameters and Wildcards
+W>
+W> Not all parameters take wildcards; those that **do** will state so in their reference docs.
+
+Here we will use wildcards to return all the PowerShell commands for managing images:
+
+```powershell
+Get-Command -Name *image*
+```
+
+Your results should look like this:
+
+```text
+CommandType     Name                            Version    Source
+-----------     ----                            -------    ------
+Function        Dismount-DiskImage              2.0.0.0    Storage
+Function        Get-DiskImage                   2.0.0.0    Storage
+Function        Mount-DiskImage                 2.0.0.0    Storage
+Cmdlet          Add-WindowsImage                3.0        Dism
+...
+```
+
+? What command would you run to narrow this down to only include commands for mounting and dismounting disk images?
+
+! Get-Command -Name *mount-DiskImage ; Get-Command -Noun DiskImage -Verb *mount
+
+? What command would you run to narrow this down to only include commands for managing Windows images?
+
+! Get-Command -Noun WindowsImage ; Get-Command -Name *WindowsImage ; Get-Command -Name *WindowsImage*
+
+? What parameter would you use to return only commands that would get images, not act on them?
+
+! Get-Command -Name Get*image* ; Get-Command -Verb Get -Noun *image* ; Get-Command -Name Get-*image*
+
+{/exercise}
+
+## Get-Help
+
+In the previous section we looked at how to use commands and their parameters - but how do you discover _what_ parameters are available for a particular command?
+And even if you know that a command has a parameter, how do you know what it accepts or expects?
+
+Luckily, PowerShell has a pretty awesome built-in help system.
+
+We can access that by running `Get-Help` and passing it a command or topic to get help on.
+Let's first get help on `Get-Help` itself!
+
+```powershell
+Get-Help -Name Get-Help
+```
+
+You should see text like this:
+
+```text
+NAME
+    Get-Help
+
+SYNOPSIS
+    Displays information about Windows PowerShell commands and concepts.
+
+...
+```
+
+This returns information similar to Linux [man pages](https://en.wikipedia.org/wiki/Man_page) - that is, it returns reference documentation for PowerShell commands.
+You can get the help directly in the console, but you can also get the help in a pop out window via the `ShowWindow` parameter or open a link to the online documentation (if it exists) via the `Online` parameter.
+
+```powershell
+Get-Help -Name Get-Help -ShowWindow
+Get-Help -Name Get-Help -Online
+```
+
+What parameter would you add to show examples? To show the full help?
+
+{exercise, id: getting-help}
+
+## Exercise 3: Getting Help
+
+### Getting Help for Get-Command
+
+Now that you know how to get help for a command, get the help for `Get-Command` in a pop-out window so you can reference it for the rest of this section.
+
+? What command did you use?
+
+! Get-Help -Name Get-Command -ShowWindow ; Get-Help -ShowWindow -Name Get-Command ; Get-Help Get-Command -ShowWindow
+
+? How many parameters does `Get-Command` have?
+
+! 14
+
+? Which parameter would you use to limit the number of results?
+
+! TotalCount
+
+? Which parameter would you use to ensure that it only returns results from a particular module?
+
+! Module
+
+? What does the `ListImported` parameter do?
+
+! Indicates that this cmdlet gets only commands in the current session.
+
+### Service Management
+
+Often when investigating issues on a server you'll need to see if a service is running or not.
+
+? 1. What command would you use to query for commands that manage Windows services?
+
+! Get-Command -Name *Service* ; Get-Command -Name *Service ; Get-Command -Noun *Service* ; Get-Command -Noun Service
+
+? 2. What is the command for querying the system for services?
+
+! Get-Service
+
+? 3. How many parameters does that command take?
+
+! 8
+
+? 4. What command would you run to check if the print spooler service is running?
+
+! Get-Service -Name *spooler* ; Get-Service -DisplayName *spooler* ; Get-Service -DisplayName *print*
+
+? 5. Is the print spooler service running?
+
+A) Yes
+b) No
+
+? 6. If it is running, what command would you use to stop it? (remember, you can look up commands with `Get-Command` whenever you want)
+
+! Stop-Service -Name Spooler
+
+#### Action Items 
+
+1. Make sure the service is stopped.
+2. Start the service again.
+3. Restart the service with a single command.
+
+{/exercise}

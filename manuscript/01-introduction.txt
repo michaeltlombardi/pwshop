@@ -1,0 +1,19 @@
+# Introduction
+
+This is the PowerShell 101 Workshop, `pwshop`.
+It's designed to be a self-paced introduction to PowerShell fundamentals that can be completed alone or with an instructor / facillitator.
+
+Over the course of this workshop you will learn:
+
+- How PowerShell commands are structured and how to use them
+- How to discover commands and find documentation for using them
+- How to interact with objects
+- How to use the pipeline
+- How to filter objects
+- How to use variables and operators
+- How to use PowerShell's providers to manage files, certificates, and registry keys
+- How to remotely manage systems with PowerShell
+- How to find commands and modules on the PowerShell Gallery and pull them down for use
+- How to write scripts using conditionals, loops, and multiple output streams, and how to handle errors.
+
+The workshop is designed to be worked through in sequential order, later exercises build on skills acquired during earlier exercises.
