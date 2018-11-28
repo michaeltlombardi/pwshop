@@ -22,7 +22,7 @@ You wouldn't expect that a `Get-SomeObject` command would do anything but retrie
 
 T> For the rest of this workshop, you may want to keep the list of approved verbs open.
 
-{exercise, id: get-verb}
+{exercise, case-sensitive: false, id: get-verb}
 
 ### Exercise 1: Get-Verb
 
@@ -106,7 +106,7 @@ This is the most common way we're going to use commands at the prompt, by passin
 
 With that in mind, time for an exercise!
 
-{exercise, id: using-parameters}
+{exercise, case-sensitive: false, id: using-parameters}
 
 ## Exercise 2: Using Parameters
 
@@ -285,7 +285,7 @@ Get-Help -Name Get-Help -Online
 
 What parameter would you add to show examples? To show the full help?
 
-{exercise, id: getting-help}
+{exercise, case-sensitive: false, id: getting-help}
 
 ## Exercise 3: Getting Help
 
