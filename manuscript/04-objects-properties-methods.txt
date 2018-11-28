@@ -1,0 +1,295 @@
+# Objects, Properties, & Methods
+
+## Properties
+
+So far we've been looking at single commands and their output.
+But why does `Get-Command` return something that looks like a table to the screen?
+
+```powershell
+Get-Command -Noun Command
+```
+
+```text
+CommandType     Name                Version    Source
+-----------     ----                -------    ------
+Cmdlet          Get-Command         3.0.0.0    Microsoft.PowerShell.Core
+Cmdlet          Invoke-Command      3.0.0.0    Microsoft.PowerShell.Core
+Cmdlet          Measure-Command     3.1.0.0    Microsoft.PowerShell.Utility
+...
+```
+
+It does this because it's returning an array of _objects_ (as rows in the table output), each of which have _properties_ (seen as the columns in the output).
+
+So, looking at the results, the only properties for this command object we're getting back are `CommandType`, `Name`, `Version`, and `Source`, right?
+
+Nope! There's several more properties, these are just the ones you see by default.
+As you're about to see, displaying all of the properties would be a bit of a mess visually.
+
+```powershell
+Get-Command -Name Get-Command | Get-Member -MemberType Properties
+```
+
+```text
+   TypeName: System.Management.Automation.CmdletInfo
+
+Name                MemberType     Definition
+----                ----------     ----------
+CommandType         Property       System.Management.Automation.CommandTypes CommandType {get;}
+DefaultParameterSet Property       string DefaultParameterSet {get;}
+Definition          Property       string Definition {get;}
+HelpFile            Property       string HelpFile {get;}
+...
+```
+
+How do you discover all of the properties a command has?
+You can use `Get-Member`.
+
+T> ### Get Help
+T>
+T> It's probably a good idea to open up the help for `Get-Member` in a pop out window.
+T>
+T> If you don't remember how, check above in the `Get-Help` section.
+
+Notice that the first thing this command returned was a `TypeName`.
+This is the fully qualified name of the type of object you're looking at.
+In this case, the shorthand is `CmdletInfo`.
+
+The next thing you'll see is a list of properties - `CommandType`, `Definition`, etc.
+
+```powershell
+Get-Command -Name Get-Command | Select-Object -Property Name, HelpFile
+```
+
+```text
+Name        HelpFile
+----        --------
+Get-Command System.Management.Automation.dll-Help.xml
+```
+
+Okay, so now you can see what properties an object has - but how can you see the _values_ of those properties?
+
+We can do that with `Select-Object`, a command which will be a commonly used part of your toolkit for the rest of this workshop.
+Notice that we passed two properties to the `Select-Object` command: `Name` and `HelpFile`.
+If you want to display all of the properties you can do so by specifying a wildcard (`*`) instead of any property names.
+
+```powershell
+Get-Command -Name Get-Command | Select-Object -Property *
+```
+
+```text
+HelpUri             : https://go.microsoft.com/fwlink/?LinkID=113309
+DLL                 : C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll
+Verb                : Get
+Noun                : Command
+...
+```
+
+This will display all of the same properties that an object had listed when you introspected it with the `Get-Member` command.
+
+I> ### Hidden Properties
+I>
+I> Some objects will have *hidden* properties. You can use the `Force` parameter on `Select-Object` and `Get-Member` to display them.
+I> This won't *usually* be necessary.
+
+{exercise, case-sensitive: false, id: service-properties}
+
+## Exercise 4: Service Properties
+
+Remember that you can use `Get-Service` to retrieve services; do so to retrieve the print spooler service.
+
+? How many properties (any MemberType with `property` in it) are available for a service object?
+
+! 16
+
+? What type of service is the print spooler service?
+
+! Win32OwnProcess ; InteractiveProcess
+
+? What is the start type for the print spooler service?
+
+! Automatic
+
+? Can the print spooler service stop?
+
+A) Yes
+b) No
+
+? Can it pause and continue?
+
+a) Yes
+B) No
+
+{/exercise}
+
+## Methods
+
+In addition to the _properties_, just about every object also has methods.
+Normally, in PowerShell, you will be able to find a command to manage an object (to start or stop a service, for example) - but, because PowerShell is built on top of .NET, you also have access to the methods directly.
+
+```powershell
+Get-Command -Name Get-Command | Get-Member -MemberType Methods
+```
+
+```text
+   TypeName: System.Management.Automation.CmdletInfo
+
+Name             MemberType Definition
+----             ---------- ----------
+Equals           Method     bool Equals(System.Object obj)
+GetHashCode      Method     int GetHashCode()
+GetType          Method     type GetType()
+ResolveParameter Method     System.Management.Automation.ParameterMetadata ResolveParameter(string name)
+ToString         Method     string ToString()
+```
+
+You can find the methods for an object using `Get-Member` again, this time specifying `Methods`.
+Each of these methods is [documented](https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.cmdletinfo?view=powershellsdk-1.1.0), but the method we want to focus on right now is [`ResolveParameter`](https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.commandinfo.resolveparameter?view=powershellsdk-1.1.0#System_Management_Automation_CommandInfo_ResolveParameter_System_String_).
+
+Looking at the documentation for it we find that it can be passed the name of a commands parameter and will return metadata about it.
+
+```powershell
+(Get-Command -Name Get-Command).ResolveParameter('Something')
+```
+
+```text
+Exception calling "ResolveParameter" with "1" argument(s): "A parameter cannot be found that matches parameter name 'Something'."
+At line:1 char:1
++ (Get-Command -Name Get-Command).ResolveParameter('Something')
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ParameterBindingException
+```
+
+If we just pass an arbitrary string to the method PowerShell shows us an error.
+It looks like `Something` isn't a valid parameter for `Get-Command`.
+So what we need to do is discover what valid parameters `Get-Command` _does_ have.
+We can do that with our old friend `Get-Help`.
+
+```powershell
+Get-Help -Name Get-Command -ShowWindow
+```
+
+Looking through the list of parameters, pick one - this example is going to use `Module`
+
+```powershell
+(Get-Command -Name Get-Command).ResolveParameter('Module')
+```
+
+```text
+Name            : Module
+ParameterType   : System.String[]
+ParameterSets   : {[__AllParameterSets, System.Management.Automation.ParameterSetMetadata]}
+IsDynamic       : False
+Aliases         : {PSSnapin}
+Attributes      : {__AllParameterSets, System.Management.Automation.AliasAttribute}
+SwitchParameter : False
+```
+
+So that gives us back some interesting information about the `Module` parameter:
+
+- We see its name, `Module`, but we already had that.
+- We see that it accepts input which is one or more strings of characters - the `[]` denotes that it accepts an array.
+- We see that it belongs to all parameter sets.
+- We see that it is not dynamic.
+- We see that it has one alias, `PSSnapin`, a holdover from when PowerShell commands were distributed as snapins instead of modules.
+- We see that it has attributes for belonging to all parameter sets and for having an alias, both of which we would expect given the values in `ParameterSets` and `Aliases`.
+- We see that it is _not_ a switch parameter, which makes sense as it accepts input and is not a toggle.
+
+{exercise, case-sensitive: false, id: file-methods}
+
+## Exercise 5: File Methods
+
+Create a new file using the `New-Item` command.
+You can retrieve information about a file using the `Get-Item` command.
+We'll cover why this is `Item` and not `File` shortly!
+
+```powershell
+New-Item -Name 'something.txt' -Value 'just some text'
+Get-Item -Path 'something.txt'
+```
+
+```text
+# NOTE: The directory and LastWriteTime will be different for you,
+# depending on when you're doing the workshop and in which folder.
+
+    Directory: C:\code\personal\pwshop
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        9/18/2018   4:32 PM             14 something.txt
+```
+
+Running the `ResolveParameter` method on a command's information is interesting but not particularly useful.
+What if we wanted to manage a file?
+
+#### Retrieve information about `something.txt` using the `Get-Item` command to the right.
+
+? How many methods are available on a file object?
+
+! 24
+
+? What is the name of the method for copying the file?
+
+! CopyTo
+
+#### Make a copy of the file as `else.txt` using that method and retrieve information about the new file.
+
+? Does the default information for `else.txt` seem to be different from `something.txt` (aside from the name)?
+
+a) Yes
+B) No
+
+#### Use the `Delete` method on `something.txt` and retrieve information about `something.txt` again.
+
+? Did `Get-Item` error? Why?
+
+! Yes; It's deleted; It's gone
+
+#### Use the `Delete` method on `else.txt`.
+
+{/exercise}
+
+## Output Views
+
+Up to this point you may have noticed that sometimes PowerShell seems to output results as a table, sometimes as a list of properties and their values.
+Actually, neither of these is true - PowerShell _always_ emits objects.
+What you're seeing is a different _format_ for the output.
+
+There's a few different commands you can do to change the output format:
+
+- `Format-Table` displays the output in a table, which is what we're used to seeing.
+- `Format-List` displays the output in a list of key-value pairs.
+- `Format-Wide` displays only one property of an object (and most objects have a default).
+- `Out-Gridview` isn't strictly a formatting command, but it creates a useful popout window with the objects in it.
+  In the gridview you can sort and filter through the output.
+
+{exercise, case-sensitive: false, id: formats-and-views}
+
+## Exercise 6: Formats and Views
+
+```powershell
+Get-Command -Verb 'Format'
+Get-Command -Verb 'Format' | Format-List
+Get-Command -Verb 'Format' | Format-Table -Property Name, Source
+Get-Command -Verb 'Format' | Format-Wide
+Get-Command -Verb 'Format' | Out-GridView
+```
+
+Run the commands above and answer the following questions:
+
+? How is the output view from `Format-List` different from the default?
+
+! It's a list ; It includes all of the properties for each object
+
+? How is the `Format-Table` output view different from the default?
+
+! It only shows two properties ; it only shows the specified properties ; it only includes name and source
+
+? What displays when you use `Format-Wide`?
+
+! The commands in two columns ; two columns
+
+? Sort the output in the gridview on `Source`. Does that change anything?
+
+! It reorders the list ; It changes the list order ; It sorts the list
+
+{/exercise}
