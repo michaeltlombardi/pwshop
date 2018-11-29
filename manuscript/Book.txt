@@ -2,3 +2,4 @@
 02-setup.txt
 03-commands-and-discoverability.txt
 04-objects-properties-methods.txt
+05-pipeline.txt

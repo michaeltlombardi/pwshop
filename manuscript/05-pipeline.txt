@@ -1,0 +1,71 @@
+# The Pipeline
+
+In this section you've seen that PowerShell is all about _objects_ which have **properties** and **methods**.
+With this foundational understanding of what's being used you're ready to look at the pipeline.
+
+Actually, you've been using the pipeline since the last section.
+Whenever you see the pipeline operator - `|` - you can be reasonably sure you're interacting with the pipeline.
+
+In PowerShell you can use the pipeline operator to send the outputs of one command to the input of the next command.
+
+```powershell
+Get-Command -Name Get-Command | Get-Member -MemberType Properties
+```
+
+In the earlier example for `Get-Member` (as repeated above) the output of `Get-Command` is used as the input for `Get-Member`.
+Remember, the output of PowerShell commands is always one or more _objects_, not just plain text.
+
+PowerShell lets you arbitrarily chain commands together via the pipeline, allowing you to manipulate and use the resulting objects however you need to.
+For example, you could retrieve service statuses, convert the information to JSON, and write it to a file.
+
+```powershell
+Get-Service | Select-Object -Property Name | ConvertTo-Json | Out-File results.json
+```
+
+We'll go through each step one by one:
+
+1. First, we use `Get-Service` to retrieve the list of services on the machine.
+   This will output service objects as we are familiar with.
+2. We'll then use `Select-Object` to limit the properties of each object that we want to pass along the pipeline.
+   Since all we care about is the name of the service and its state, that's all we want to pass forward for the rest of the pipeline.
+   This will output the service information we want as an array of objects.
+3. We then call the command `ConvertTo-Json` which will take the output of `Select-Object` as its input and convert it into a JSON string.
+   That full string is then emitted as the output.
+4. `Out-File` gets the string of JSON objects from `ConvertTo-Json` and then writes that information out to `results.json` in the current directory.
+   Note that `Out-File` does not, itself, emit any output.
+   Because there is no output we cannot chain any further commands to the end of this pipeline.
+
+{exercise, case-sensitive: false, id: pipeline-chaining}
+
+## Exercise 7: Pipeline Chaining
+
+In this exercise we're going to reverse the flow from the earlier example.
+Make sure you _actually run_ the example in your prompt before starting this exercise.
+
+? What command would you run to get content from the `results.json` file?
+
+% Use `Get-Command` and `Get-Help` here.
+
+! Get-Content ; Get-Content -Path results.json
+
+? What command would you run to convert the content _from_ JSON?
+
+! ConvertFrom-Json
+
+? What command would you run to sort objects on their properties?
+
+! Sort-Object
+
+{lines: 1}
+? Get the content from `results.json`, convert them from JSON, and sort the results on `Status`. What, if anything, is different about the results when read from disk?
+
+{answer}
+The results now have a status that is an integer instead of an enumerated value (`Running`, `Stopped`, etc).
+
+This is because what PowerShell stored on disk was the value for the [`ServiceControllerStatus`](https://docs.microsoft.com/en-us/dotnet/api/system.serviceprocess.servicecontrollerstatus?view=netframework-4.7.2) enum, which is represented as an integer.
+
+When we convert the object from JSON we do not regain all of the type information and properties of the object stored.
+Be mindful of this when storing objects on disk in this way.
+{/answer}
+
+{/exercise}
