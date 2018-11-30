@@ -3,3 +3,4 @@
 03-commands-and-discoverability.txt
 04-objects-properties-methods.txt
 05-pipeline.txt
+06-filtering-and-where-object.txt

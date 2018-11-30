@@ -1,0 +1,265 @@
+# Filtering & Where-Object
+
+One particularly good use case for the pipeline is to filter objects for further use.
+It is _best_ practice, where possible, to "filter left" - that is, to filter objects when you're querying for them rather than retrieving an unfiltered list and selecting the desired values afterward.
+
+For example, your Active Directory / LDAP / SQL administrators probably _do not_ want you continually running queries to retrieve all of the available data so you can filter it locally.
+Normally, instead of returning all possible entries, you filter in your `Get-` command.
+
+Sometimes, however, you _can't_ filter left.
+For example, if you wanted to retrieve all of the services on a computer which were running, how would you do that?
+
+T> #### Getting Help for `Get-Service`
+T>
+T> Remember, you can use `Get-Help -Name 'Get-Service' -ShowWindow` to display help in a popout.
+
+Notice that there's no parameter for filtering on status.
+Instead, you'll have to use the pipeline and the `Where-Object` command.
+
+```powershell
+Get-Service | Where-Object -Property Status -eq Running
+```
+
+This passes all of the services discovered by `Get-Service` to the filtering command, `Where-Object`.
+That command inspects each object, looking to see if its `Status` property is equal to `Running`.
+Did it return any results where the services were _not_ running?
+
+Note the use of the `eq` operator.
+This is a special [comparison operator](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-6) which returns true if the value of the service's `Status` property is equal to `Running`.
+
+## Comparison Operators
+
+It's worth taking some time to discuss the available comparison operators in PowerShell.
+You'll use these when building filters and when checking the truthiness of an assumption (is this object equal to that object? does this string match that pattern? etc).
+See the table below for the list of operators and what they mean.
+
+| Type        | Operators      | Description |
+|:-----------:|:--------------:|-------------|
+| Equality    | `eq`          | equals
+|             | `ne`          | not equals
+|             | `gt`          | greater than
+|             | `ge`          | greater than or equal
+|             | `lt`          | less than
+|             | `le`          | less than or equal
+||||
+| Matching    | `like`        | Returns true when string matches wildcard pattern
+|             | `notlike`     | Returns true when string does not match wildcard pattern
+|             | `match`       | Returns true when string matches regex pattern; $matches contains matching strings
+|             | `notmatch`    | Returns true when string does not match regex pattern; $matches contains matching strings
+||||
+| Containment | `contains`    | Returns true when reference value contained in a collection
+|             | `notcontains` | Returns true when reference value not contained in a collection
+|             | `in`          | Returns true when test value contained in a collection
+|             | `notin`       | Returns true when test value not contained in a collection
+||||
+| Replacement | `replace`     | Replaces a string pattern
+||||
+| Type        | `is`          | Returns true if both object are the same type
+|             | `isnot`       | Returns true if the objects are not the same type
+
+```powershell
+# This will evaluate to true:
+1 -eq 1
+# This will evaluate to false:
+1 -eq 2
+# This will evaluate to true:
+1 -lt 2
+# This will return 0, 1:
+0, 1, 2 -lt 2
+# This will evaluate to true (note the case insensitivity):
+"Apple" -like "ap*"
+# This will evaluate to false (adding the 'c' denotes case sensitivity):
+"Apple" -clike "ap*"
+# This will return "apply"
+"Apple", "apply" -clike "ap*"
+# This will evaluate to true (uses regex, not just wildcard):
+"Apple" -match "p{2}"
+# This will evaluate to true:
+"Apple", "Banana", "Cherry" -contains "apple"
+# This will evaluate to true:
+"apple" -in "Apple", "Banana", "Cherry"
+# This will output "Apply"
+"Apple" -replace "e", "y"
+# This will output "Acceptable"
+"Apple" -replace "p{2}", "cceptab"
+# This will output true:
+1 -eq "1"
+# This will output true:
+1 -is [int]
+# This will output false:
+"1" -is [int]
+```
+
+{exercise, case-sensitive: false, id: equality-operators}
+## Exercise 8: Equality Operators
+
+? How would you represent five is less than 10 in PowerShell?
+
+! 5 -lt 10
+
+? How would you represent 3 is greater than or equal to 5 in PowerShell?
+
+! 3 -ge 5
+
+? How would you check to see if the string "five" is greater than "three"?
+
+! "five" -gt "three"
+
+? Is the string "five" greater than "three"?
+
+a) Yes
+B) No
+
+? Use `Get-Service` to retrieve the list of services on your machine and then filter them such that the `StartType` property is not equal to `Automatic`. What is the full set of commands you used?
+
+! Get-Service | Where-Object -Property StartType -ne Automatic
+
+{/exercise}
+
+{exercise, case-sensitive: false, id: matching-operators}
+
+## Exercise 9: Matching Operators
+
+? Which of the following strings matches the pattern "^P.ck.+": "Peter", "Piper", "Picked", "Peck", "Pickled", "Peppers"
+
+a) Picked, Peck, Pickled
+B) Picked, Pickled
+c) Piper, Picked, Pickled, Peppers
+
+? Which of those strings doesn't match the following pattern: "(a|e|i|o|u).(a|e|i|o|u)"
+
+a) Peter, Piper
+b) Peter, Piper, Picked
+c) Picked, Pickled, Peppers
+D) Picked, Peck, Pickled, Peppers
+
+? Use `Get-Service` to retrieve the list of services on your machine and then filter them such that you match the `Name` property against the following pattern: "^w.+svc" How many results did you get?
+
+% You can pipe the output to `Measure-Object` if you don't want to count by hand
+
+! 19
+
+? Filter those results to show only the services that match the pattern and are also running. How many results did you get now?
+
+% You can pipe the output of `Where-Object` to another call to `Where-Object`
+
+! 6
+
+{/exercise}
+
+{exercise, case-sensitive: false, id: containment-operators}
+
+## Exercise 10: Containment Operators
+
+T> Note that you can break longer lines of PowerShell up.
+T> If you hit enter _after_ a pipeline operator PowerShell will expect further commands.
+T> If you hit enter again without adding more code it **will** error.
+T> So you could do something like this:
+T>
+T> ```powershell
+T> # It's not necessary to make everything line
+T> # up like this, but it _is_ easier to read.
+T> Get-Service |
+T>   Where-Object -Property "Something" -eq        -Value "Else" |
+T>   Where-Object -Property "Another"   -match     -Value "p{2}" |
+T>   Where-Object -Property "Last"      -contains  -Value 1
+T> ```
+
+? Use `Get-Service` to retrieve the list of services on your machine and then filter them such that you check whether the value of the `StartType` is **not** in the following list: `"Automatic","Manual"`. Is `RemoteAccess` in the results?
+
+A) Yes
+b) No
+
+? Use `Get-Service` to retrieve the list of services on your machine and then filter them such that you only return results where the `ServiceType` property contains `"Win32OwnProcess"`. Is `RemoteAccess` in the results?
+
+a) Yes
+B) No
+
+? Pipe the results of the previous question to another filter, this time also filtering out all of the stopped services. How many results do you have now?
+
+! 8
+
+? Filter the results again, this time returning only the services with a display name that matches this pattern: `"^Windows.*Service$"`. How many results do you have now?
+
+! 1
+
+{/exercise}
+
+## Where-Object and FilterScript
+
+The solution to the last exercise was complex, requiring the output of each filter to be passed along the pipeline to another filter.
+
+There's a simpler way to do this: use the `FilterScript` parameter of `Where-Object`.
+That might look something like this:
+
+```powershell
+Get-Service | Where-Object -FilterScript {
+  $_.ServiceType -contains "Win32OwnProcess" -and
+  $_.Status -ne "Stopped" -and
+  $_.DisplayName -match "^Windows.*Service$"
+}
+```
+
+In the example above you might notice some interesting things we haven't seen before:
+
+- The first is the strange `$_` notation.
+  This is the notation in PowerShell to represent the current object in the pipeline.
+  `Where-Object` is actually not processing all of the objects from `Get-Service` at the same time.
+  Instead, it is checking each object it receives from the pipeline to see if it matches the filter criteria.
+  This was true in the earlier examples too.
+  - In other words, the `$_` notation is a shortcut to the object currently being processed in the pipeline.
+- We're using the `and` operator here.
+  Like the comparison operators we've been looking at, `-and` is a special operator that is used in PowerShell, this time for logic.
+  Other [logical operators](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logical_operators?view=powershell-6) include `or`, `xor`, and `not` (see table below).
+  - We use the `and` operator to make sure we return only results where _all three_ filter checks are true.
+- We placed all of the filters inside of curly braces (`{}`).
+  Those denote a _scriptblock_, which is just a chunk of PowerShell code.
+
+| Logical Operator |               Description               |          Example           | Result  |
+|:----------------:|:----------------------------------------|:--------------------------:|:-------:|
+|       `and`      | TRUE when _both_ statements are TRUE.   | `(1 -eq 1) -and (1 -eq 2)` | `False` |
+|       `or`       | TRUE when _either_ statement is TRUE.   | `(1 -eq 1) -or  (1 -eq 2)` | `True`  |
+|       `xor`      | TRUE when _only one_ statement is TRUE. | `(1 -eq 1) -xor (2 -eq 2)` | `False` |
+|       `not`      | Negates the statement that follows.     | `-not (1 -eq 1)`           | `False` |
+|        `!`       | Same as `not`.                          | `!(1 -eq 1)`               | `False` |
+
+You can use the `FilterScript` parameter _instead of_ `Property` and `Value`, the way we've used `Where-Object` up until now.
+They are _mutually exclusive_ parameters.
+
+{exercise, case-sensitive: false, id: filterscript}
+
+## Exercise 11: FilterScript
+
+{lines: 3}
+? Build and run a filter script which returns only those services which match _at least one_ of the following:
+  - The display name matches "Network"
+  - The start type is in this list: "Manual", "Disabled"
+  Type the script below:
+
+{answer}
+Get-Service | Where-Object -FilterScript {
+  $_.DisplayName -match "Network" -or
+  $_.StartType -in "Manual", "Disabled"
+}
+{/answer}
+
+? How many results did you get?
+
+% Remember, you can pipe to `Measure-Object`
+
+! 143
+
+? Modify and run the filter script so it returns only those services which match _both_ of those conditions. Are the results the same?
+
+a) Yes
+B) No
+
+? How many results did you get with the modified filter?
+
+! 7
+
+? Modify and run the filter script so it returns only those services which match _one_ of those conditions. How many results did you get?
+
+! 136
+
+{/exercise}
