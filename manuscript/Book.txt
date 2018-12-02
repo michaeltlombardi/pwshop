@@ -5,3 +5,4 @@
 05-pipeline.txt
 06-filtering-and-where-object.txt
 07-variables-and-operators.txt
+08-providers.txt
