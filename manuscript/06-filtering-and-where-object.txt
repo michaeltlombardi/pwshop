@@ -202,17 +202,17 @@ Get-Service | Where-Object -FilterScript {
 
 In the example above you might notice some interesting things we haven't seen before:
 
-- The first is the strange `$_` notation.
+* The first is the strange `$_` notation.
   This is the notation in PowerShell to represent the current object in the pipeline.
   `Where-Object` is actually not processing all of the objects from `Get-Service` at the same time.
   Instead, it is checking each object it receives from the pipeline to see if it matches the filter criteria.
   This was true in the earlier examples too.
-  - In other words, the `$_` notation is a shortcut to the object currently being processed in the pipeline.
-- We're using the `and` operator here.
+  * In other words, the `$_` notation is a shortcut to the object currently being processed in the pipeline.
+* We're using the `and` operator here.
   Like the comparison operators we've been looking at, `-and` is a special operator that is used in PowerShell, this time for logic.
   Other [logical operators](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logical_operators?view=powershell-6) include `or`, `xor`, and `not` (see table below).
-  - We use the `and` operator to make sure we return only results where _all three_ filter checks are true.
-- We placed all of the filters inside of curly braces (`{}`).
+  * We use the `and` operator to make sure we return only results where _all three_ filter checks are true.
+* We placed all of the filters inside of curly braces (`{}`).
   Those denote a _scriptblock_, which is just a chunk of PowerShell code.
 
 | Logical Operator |               Description               |          Example           | Result  |
@@ -232,8 +232,8 @@ They are _mutually exclusive_ parameters.
 
 {lines: 3}
 ? Build and run a filter script which returns only those services which match _at least one_ of the following:
-  - The display name matches "Network"
-  - The start type is in this list: "Manual", "Disabled"
+  * The display name matches "Network"
+  * The start type is in this list: "Manual", "Disabled"
   Type the script below:
 
 {answer}
