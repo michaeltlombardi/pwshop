@@ -1,0 +1,173 @@
+# Variables & Operators
+
+So far in this workshop we've worked through using commands at the prompt and manipulating the output.
+But what if you need to store objects for later use?
+
+This is where variables come in.
+In PowerShell, variables are strings with a `$` symbol prepended to them, such as `$Credential` or `$Results`.
+
+You've already seen a special variable, `$_`, in the previous section.
+This is an [automatic variable](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_automatic_variables?view=powershell-6) provided by PowerShell and which contains the current object in the pipeline.
+It has an alias, `$PSItem`.
+
+Here are some examples of using variables:
+
+```powershell
+$SomeVariable = 5
+Write-Output $SomeVariable
+$SomeVariable = 3
+Write-Output $SomeVariable
+$SomeVariable = Get-Service | Select-Object -First 1 -ExpandProperty Name
+Write-Output $SomeVariable
+```
+
+And the output for those commands:
+
+```text
+5
+3
+AESMService
+```
+
+To assign a value to a variable we use the `=` symbol.
+You can reassign a variable to another value if you wish.
+
+The value to the right of the `=` can be any valid PowerShell command.
+
+This is useful for storing long values or for caching the results of commands.
+It becomes _very_ useful when writing scripts.
+
+## Operators
+
+There are several other [operators](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-6) available to manipulate objects in PowerShell.
+We've previously looked at comparison and logical operators.
+
+You can add (`+`), subtract (`-`), multiply (`*`), divide (`/`), and calculate the remainder of a division operation (`%`).
+
+Note that you can use the arithmetic operators on any object that supports them, such as `String` and `DateTime`, in addition to numbers.
+
+
+A> ### When Not to Use Arithmetic Operators
+A>
+A> Sometimes it is easier to read and understand code that uses methods rather than the arithmetic operators.
+A> This is especially true in cases where the arithmetic operators are being used in way that might not be easy to guess.
+
+{exercise, case-sensitive: false, id: arithmetic-operators}
+
+## Exercise 12: Arithmetic Operators
+
+? Set the value of the variable `$Example` equal to the string `Apple`. What command did you use?
+
+! $Example = "Apple" ; $Example = 'Apple'
+
+? What is the result of `$Example + 5`?
+
+! Apple5
+
+? What is the result of `$Example - 1`?
+
+! Error ; Cannot convert value "Apple" to type "System.Int32". Error: "Input string was not in a correct format."
+
+? What is the result of `$Example.Length - 1`?
+
+! 4
+
+? What is the result of `$Example * 2`?
+
+! AppleApple
+
+? What is the result of `$Example / 5`?
+
+! Error ; Cannot convert value "Apple" to type "System.Int32". Error: "Input string was not in a correct format."
+
+? What is the result of `$Example.Length % 3`?
+
+! 2
+
+? Set the value of the variable `$Example` equal to `Get-Date -Date 1999-01-01`.  What is the result of `$Example + 1`?
+
+! Friday, January 1, 1999 12:00:00 AM
+
+? What is the result of `$Example + 1000`?
+
+! Friday, January 1, 1999 12:00:00 AM
+
+? What is the result of `$Example + 10000000`?
+
+! Friday, January 1, 1999 12:00:01 AM
+
+? How many methods are available on `$Example`?
+
+% Remember you can pipe output to the `Measure-Object` command to automatically get a count.
+
+! 44
+
+? Add 136 hours to `$Example` using the appropriate method. What method did you use?
+
+! AddHours
+
+? When you added 136 hours to `$Example`, what date was returned?
+
+! Wednesday, January 6, 1999 4:00:00 PM
+
+? Specify `-136` instead of `136`, using the same method. What date is returned?
+
+! Saturday, December 26, 1998 8:00:00 AM
+
+{/exercise}
+
+## Assignment Operators
+
+Now that you know the arithmetic operators you'll be able to make sense of the assignment operators.
+You're already familiar with `=`, which sets the variable on the left equal to the output of the PowerShell on the right.
+
+There is also the `+=` operator, which sets the variable on the left equal to itself _plus_ the output of the PowerShell on the right.
+The `-=` operator sets the variable equal to itself _minus_ the output of the PowerShell on the right, the `/=` operator to itself _divided_ by the output of the PowerShell on the right, and so on.
+
+Here are some examples:
+
+```powershell
+$Data = 2
+Write-Output $Data
+$Data += 5
+Write-Output $Data
+$Data -= 1
+Write-Output $Data
+$Data *= 3
+Write-Output $Data
+$Data /= 2
+Write-Output $Data
+$Data %= 7
+Write-Output $Data
+
+```
+
+And their output:
+
+```text
+2
+7
+6
+18
+9
+2
+```
+
+## Unary Operators
+
+You can increment or decrement variables and properties using the unary operators `++` and `--` respectively.
+Note that this is functionaly equivalent to `+= 1` and `-= 1`.
+
+Here are unary operator examples:
+
+```powershell
+$a = 5
+$a++
+Write-Output $a
+```
+
+And the output:
+
+```text
+6
+```

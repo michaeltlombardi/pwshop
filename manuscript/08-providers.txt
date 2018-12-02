@@ -1,0 +1,292 @@
+# PowerShell Providers
+
+Providers are one of the ways PowerShell makes our lives easier - they allow us to use the [same set of commands](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_providers?view=powershell-6) to manage certificates, files, registry keys, and more - all without having to learn new commands for each.
+
+
+We'll start with the first command in this group that you're likely to need: `Get-ChildItem`.
+This command will search inside a container and return all of the objects it finds.
+It is _not_ recursive by default, but does have the `Recurse` parameter to enable that behavior.
+
+Here's a few examples using the `Get-ChildItem` command:
+
+```powershell
+Get-ChildItem -Path ~
+# Note: the next two commands will only work on Windows systems.
+Get-ChildItem -Path 'HKCU:\Keyboard Layout\'
+Get-ChildItem -Path 'Cert:\CurrentUser'
+```
+
+And the output:
+
+```text
+    Directory: C:\Users
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----         5/5/2018   2:04 PM                Admin
+d-----        9/23/2018   4:04 PM                Michael Lombardi
+d-r---         5/5/2018   4:58 PM                Public
+
+    Hive: HKEY_CURRENT_USER\Keyboard Layout
+Name                           Property
+----                           --------
+Preload                        1 : 00000409
+Substitutes
+Toggle
+
+Name : SmartCardRoot
+Name : Root
+Name : Trust
+...
+```
+
+The same command works across three completely different providers - it returned a list of files/folders, then registry keys, then certificate stores.
+
+Similarly, the rest of the `*-Item*` commands (you can use `Get-Command` to retrieve the full list) can be used to interact with those items.
+
+{exercise, case-sensitive: false, id: files-and-folders}
+
+## Exercise 13: Files and Folders
+
+Run the following commands:
+
+```powershell
+New-Item -Path ~/pwshopex -ItemType Directory
+Push-Location -Path ~/pwshopex
+```
+
+Notice that the command created a folder, not a file.
+
+? Run the `Mew-Item` command, specifying `~/pwshopex/test` as the path, but do **not** specify an item type. What does it create?
+
+A) A new file
+b) A new folder
+
+? Get `~/pwshopex/test` using a PowerShell command whose noun is `Item`. What command did you use?
+
+! Get-Item -Path ~/pwshopex/test ; Get-Item -Path test ; Get-Item -Path .\test
+
+? How many properties are available?
+
+! 26
+
+? How many methods are available?
+
+! 24
+
+? What is the property for determining whether or not a file is read only?
+
+! IsReadOnly
+
+? Retrieve whether or not the file at the path `~/pwshopex/test` is read only, using a command whose noun is `ItemProperty. What command did you use?
+
+! Get-ItemProperty ; Get-ItemProperty -Path ~/pwshopex/test -Name IsReadOnly
+
+? Is `~/pwshopex/test` read only?
+
+a) Yes
+B) No
+
+? Set the read only property of the file `~/pwshopex/test` to `$true`. What command did you use?
+
+! Set-ItemProperty ; Set-ItemProperty -Path ~/pwshopex/test -Name IsReadOnly -Value $true
+
+? Retrieve the item property for read only again on `~/pwshopex/test` - is it set to true?
+
+A) Yes
+b) No
+
+? Set `~/pwshopex/test` to have the value `apple` using a PowerShell command whose noun is `Item`. What command did you use?
+
+! Set-Item ; Set-Item -Path ~/pwshopex/test -Value apple
+
+T> Note the error that causes this to fail; not _all_ providers implement the same functionality.
+T>
+T> For files, we have the `*-Content` commands.
+
+? Set `~/pwshopex/test` to have the value `apple` using a PowerShell command whose noun is `Item`. What command did you use?
+
+! Set-Content ; Set-Content -Path ~/pwshopex/test -Value apple
+
+? What was the result?
+
+! Error ; Access Denied ; Set-Content : Access to the path 'C:\Users\vagrant\pwshopex\test' is denied.
+
+? Set the read only property of the file `~/pwshopex/test` back to `$false`. What command did you use?
+
+! Set-ItemProperty ; Set-ItemProperty -Path ~/pwshopex/test -Name IsReadOnly -Value $false
+
+? Use `Set-Content` to modify `~/pwshopex/test` to have the text `apple`. Did it error again?
+
+a) Yes
+B) No
+
+? Retrieve the text in `~/pwshopex/test` using a PowerShell command whose noun is `Content`. What command did you use?
+
+! Get-Content ; Get-Content -Path ~/pwshopex/test
+
+? Inspect the results of the previous command - what is the object's type?
+
+% Use the pipeline to inspect the result's properties.
+
+! String ; System.String
+
+? Add the string `banana` to `~/pwshopex/test` using a PowerShell command whose noun is `Content`. What command did you use?
+
+! Add-Content ; Add-Content -Path ~/pwshopex/test -Value banana
+
+? Retrieve the text in `~/pwshopex/test` and pass the output through the pipeline to `Measure-Object`. What's the count?
+
+! 2
+
+%% Note that there are two objects - this is because PowerShell treats each line as a separate string.
+
+? Clear the content from `~/pwshopex/test``. What command did you use?
+
+! Clear-Content ; Clear-Content -Path ~/pwshopex/test
+
+? Rename `~/pwshopex/test` to `file`. What command did you use?
+
+! Rename-Item ; Rename-Item -Path ~/pwshopex/test -NewName file
+
+? Copy `~/pwshopex/file` to `~/pwshopex/item`. What command did you use?
+
+! Copy-Item ; Copy-Item -Path ~/pwshopex/file -DestinationPath ~/pwshopex/item
+
+Use the command `Pop-Location`.
+
+? Remove the folder `~/pwshopex` from the file system using a PowerShell command whose noun is `Item. What command did you use?
+
+! Remove-Item ; Remove-Item -Path ~/pwshopex
+
+{/exercise}
+
+{exercise, case-sensitive: false, id: registry-keys}
+
+## Exercise 13: Registry Keys
+
+Run the following commands:
+
+```powershell
+New-Item -Path HKCU:\pwshop, HKCU:\pwshop\apple
+Push-Location -Path HKCU:\pwshop
+```
+
+? Get the object at the path `HKCU:\pwshop\apple`. What command did you use?
+
+! Get-Item ; Get-Item -Path HKCU:\pwshop\apple
+
+? What is this object's type?
+
+! Microsoft.Win32.RegistryKey
+
+? How many properties does the object have?
+
+! 12
+
+? How many methods does the object have?
+
+! 22
+
+? Create a new item property to `HKCU:\pwshop\apple` named `Fruit` with a value of `$true`. What command did you use?
+
+! New-ItemProperty ; New-ItemProperty -Path HKCU:\pwshop\apple -Name Fruit -Value $true
+
+? Get the object representing `HKCU:\pwshop\apple` and review its properties again using `Get-Member`. Is `Fruit` in the list of properties?
+
+a) Yes
+B) No
+
+? Get the item properties on `HKCU:\pwshop\apple` using a PowerShell command with the noun `ItemProperty`- Is `Fruit` in the list of properties are returned?
+
+A) Yes
+b) No
+
+? Copy `HKCU:\pwshop\apple` to `HKCU:\pwshop\biscuit`. What command did you use?
+
+! Copy-Item ; Copy-Item -Path HKCU:\pwshop\apple -DestinationPath HKCU:\pwshop\biscuit
+
+? Set the value of `Fruit` on `HKCU:\pwshop\biscuit` to `$false`. What command did you use?
+
+! Set-ItemProperty ; Set-ItemProperty -Path HKCU:\pwshop\biscuit -Name Fruit -Value $false
+
+? Get the list of all registry keys in `HKCU:\pwshop`. What command did you use?
+
+! Get-ChildItem ; Get-ChildItem -Path HKCU:\pwshop
+
+Run the following commands:
+
+```powershell
+Pop-Location
+Remove-Item -Path HKCU:\pwshop -Recurse
+```
+
+{/exercise}
+
+{exercise, case-sensitive: false, id: certificates}
+
+## Exercise 14: Certificates
+
+Run the following commands:
+
+```powershell
+Push-Location -Path Cert:\CurrentUser\My
+New-SelfSignedCertifacte -DnsName example.pwshop.local
+$Cert = Get-ChildItem | Where-Object -Property Subject -eq CN=example.pwshop.local
+```
+
+? What is the object type of the object you just created?
+
+! System.Security.Cryptography.X509Certificates.X509Certificate2
+
+? Does the certificate have a friendly name?
+
+a) Yes
+B) No
+
+? What is the value of the `Issuer` property on the certificate?
+
+! CN=example.pwshop.local
+
+? Try the command listed in the hint below - is it supported by this provider?
+
+% $Cert | Set-Item -Value 'Apple'
+
+a) Yes
+B) No
+
+%% Why might the certificate provider not support modifying a certificate?
+
+Run the following command:
+
+```powershell
+$Cert | Export-Certificate -FilePath "$env:HOMEDRIVE$env:HOMEPATH/pwshop.cer"
+```
+
+Open the newly created certificate file in the file explorer and compare its properties to the one in the store.
+You can do this with the following command:
+
+```powershell
+& explorer.exe "$env:HOMEDRIVE$env:HOMEPATH"
+```
+
+? Remove the self-signed cert from `Cert:\CurrentUser\My`. What command did you use?
+
+! Remove-Item ; $Cert | Remove-Item
+
+? Import the `pwshop.cer` certificate back into `Cert:\CurrentUser\My`. What command did you use?
+
+! Import-Certificate ; Import-Certificate -FilePath "$env:HOMEDRIVE$env:HOMEPATH/pwshop.cer" ; Import-Certificate -FilePath "$env:HOMEDRIVE$env:HOMEPATH/pwshop.cer" -CertStoreLocation Cert:\CurrentUser\My
+
+? Remove the cert from the store again, then remove it from the file system. Did you use a different command for each?
+
+a) Yes, completely different commands
+B) No, the same command with different parameters
+c) No, the same command with the same parameters.
+
+{/exercise}
+
+## Other Providers
+
+There are also several other providers, both builtin and available via additional modules.
+They can, like the three providers we've already explored, be interacted with through the `Item` commands.
+You can use the `Get-PSProvider` command to see which ones are available.

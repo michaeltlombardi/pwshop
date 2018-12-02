@@ -187,13 +187,13 @@ SwitchParameter : False
 
 So that gives us back some interesting information about the `Module` parameter:
 
-- We see its name, `Module`, but we already had that.
-- We see that it accepts input which is one or more strings of characters - the `[]` denotes that it accepts an array.
-- We see that it belongs to all parameter sets.
-- We see that it is not dynamic.
-- We see that it has one alias, `PSSnapin`, a holdover from when PowerShell commands were distributed as snapins instead of modules.
-- We see that it has attributes for belonging to all parameter sets and for having an alias, both of which we would expect given the values in `ParameterSets` and `Aliases`.
-- We see that it is _not_ a switch parameter, which makes sense as it accepts input and is not a toggle.
+* We see its name, `Module`, but we already had that.
+* We see that it accepts input which is one or more strings of characters - the `[]` denotes that it accepts an array.
+* We see that it belongs to all parameter sets.
+* We see that it is not dynamic.
+* We see that it has one alias, `PSSnapin`, a holdover from when PowerShell commands were distributed as snapins instead of modules.
+* We see that it has attributes for belonging to all parameter sets and for having an alias, both of which we would expect given the values in `ParameterSets` and `Aliases`.
+* We see that it is _not_ a switch parameter, which makes sense as it accepts input and is not a toggle.
 
 {exercise, case-sensitive: false, id: file-methods}
 
@@ -256,10 +256,10 @@ What you're seeing is a different _format_ for the output.
 
 There's a few different commands you can do to change the output format:
 
-- `Format-Table` displays the output in a table, which is what we're used to seeing.
-- `Format-List` displays the output in a list of key-value pairs.
-- `Format-Wide` displays only one property of an object (and most objects have a default).
-- `Out-Gridview` isn't strictly a formatting command, but it creates a useful popout window with the objects in it.
+* `Format-Table` displays the output in a table, which is what we're used to seeing.
+* `Format-List` displays the output in a list of key-value pairs.
+* `Format-Wide` displays only one property of an object (and most objects have a default).
+* `Out-Gridview` isn't strictly a formatting command, but it creates a useful popout window with the objects in it.
   In the gridview you can sort and filter through the output.
 
 {exercise, case-sensitive: false, id: formats-and-views}

@@ -8,10 +8,10 @@ For this reason, it's useful to become familiar with PowerShell's `Verb-Noun` sy
 In Powershell every command follows the format `Verb-Noun`.
 For example:
 
-- `Get-Item`
-- `Set-Item`
-- `New-Item`
-- `Remove-Item`
+* `Get-Item`
+* `Set-Item`
+* `New-Item`
+* `Remove-Item`
 
 Those are all real commands and they do roughly what you think they do - get an item, set an item's value, create a new item, delete an item.
 
@@ -58,9 +58,9 @@ b) No
 
 In addition to the verbs there's a few core commands that you should know and we're going to cover in this workshop:
 
-- `Get-Command`
-- `Get-Help`
-- `Select-Object`
+* `Get-Command`
+* `Get-Help`
+* `Select-Object`
 
 {aside}
 
@@ -88,10 +88,10 @@ We can also filter those commands by their _type_, name, verb, noun, or several 
 
 Commands have several types:
 
-- Alias
-- Application
-- Cmdlet
-- Function
+* Alias
+* Application
+* Cmdlet
+* Function
 
 For our purposes, the differences aren't *super* important.
 Cmdlets are PowerShell commands defined in C# code, functions are defined in PowerShell themselves, and aliases are names that map to cmdlets or functions.
@@ -317,15 +317,15 @@ Now that you know how to get help for a command, get the help for `Get-Command` 
 
 Often when investigating issues on a server you'll need to see if a service is running or not.
 
-? 1. What command would you use to query for commands that manage Windows services?
+? What command would you use to query for commands that manage Windows services?
 
 ! Get-Command -Name *Service* ; Get-Command -Name *Service ; Get-Command -Noun *Service* ; Get-Command -Noun Service
 
-? 2. What is the command for querying the system for services?
+? What is the command for querying the system for services?
 
 ! Get-Service
 
-? 3. How many parameters does that command take?
+? How many parameters does that command take?
 
 ! 8
 
@@ -333,7 +333,7 @@ Often when investigating issues on a server you'll need to see if a service is r
 
 ! Get-Service -Name *spooler* ; Get-Service -DisplayName *spooler* ; Get-Service -DisplayName *print*
 
-? 5. Is the print spooler service running?
+? Is the print spooler service running?
 
 A) Yes
 b) No

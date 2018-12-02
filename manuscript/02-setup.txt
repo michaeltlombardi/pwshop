@@ -8,36 +8,36 @@ Once the lab environment is set up you should _not_ need to download anything el
 
 You must have Vagrant and a hypervisor (Hyper-V or VirtualBox) installed.
 
-- [instructions for installing Vagrant](https://www.vagrantup.com/intro/getting-started/install.html)
-- [Instructions for installing Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
-  - [Instructions for adding an external switch](https://docs.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines).
+* [instructions for installing Vagrant](https://www.vagrantup.com/intro/getting-started/install.html)
+* [Instructions for installing Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+  * [Instructions for adding an external switch](https://docs.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines).
     This is necessary so that your machine can connect to the internet to download some prerequisites.
-- [Instructions for installing VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [Instructions for installing VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
 ## Steps
 
 1. Download the `Vagrantfile` from [this link](https://gitlab.com/michaeltlombardi/pwshop/raw/master/Vagrantfile?inline=false) into a folder on your machine.
-   - If it appended the `.txt` extension to the file, remove it.
+   * If it appended the `.txt` extension to the file, remove it.
      The file should just be `Vagrantfile`, no extension.
 2. Open a terminal, navigate to the folder where you saved the `VagrantFile`, and run the command below:
-   - `vagrant up --provision`
+   * `vagrant up --provision`
 3. This will download and spin up the lab machine for this workshop and get you ready to learn some PowerShell!
 
 ## Controlling the Environment
 
 You can _pause and resume_ the environment:
 
-- `vagrant suspend`
-- `vagrant resume`
+* `vagrant suspend`
+* `vagrant resume`
 
 You can _halt_ the environment, freeing up RAM:
 
-- `vagrant halt`
+* `vagrant halt`
 
 You can _destroy_ the environment, freeing up disk space:
 
-- `vagrant destroy`
+* `vagrant destroy`
 
 You can bring the environment back up after _halting_ or _destroying_ it using the same command as when you first brought it up:
 
-- `vagrant up --provision`
+* `vagrant up --provision`
