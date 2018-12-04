@@ -1,0 +1,138 @@
+# Remoting
+
+All of the PowerShell we've looked at so far relies on running on your local machine.
+Eventually, however, it's probable that you will need to manage another machine.
+To do so without RDPing to it will require you to use PowerShell remoting.
+
+T> In order to remote to a machine you _must_ have admin permissions on it.
+
+You can interact with remote systems via PowerShell sessions, using the `*-PSSession*` commands.
+
+## Interactive Remoting
+
+Firstly, you can start interactive sessions - this is functionally the same as opening a PowerShell prompt on the target computer.
+In the example below we connect to the localhost, but in a real environment you could specify the FQDN of a server or the name of a server on the same domain as the client machine.
+You can exit the session once you're done.
+This is often useful if you need to look around on a target machine for multiple commands and explore a problem space.
+
+```powershell
+Enter-PSSession -ComputerName localhost
+Exit-PSSession
+```
+
+## Invoke-Command
+
+But what if you just need to send a single command and get the results?
+If that's the case, you can use the `Invoke-Command` command to target one or more remote machines and execute PowerShell code on them.
+The `ScriptBlock` parameter takes an arbitrary PowerShell block of code, similar to `Where-Object`.
+It will return the output of whatever commands are specified in that scriptblock.
+For example:
+
+```powershell
+$Host.Name
+Invoke-Command -ComputerName localhost -ScriptBlock { $Host.Name }
+```
+
+Your output should look like this:
+
+```text
+ConsoleHost
+ServerRemoteHost
+```
+
+## Persistent Sessions
+
+You can also create a PowerShell session and save it to be used for multiple commands.
+This cuts down on the overhead cost of creating and tearing down PowerShell remoting sessions - just remember to close them when you're done.
+For Example:
+
+```powershell
+$Session = New-PSSession -ComputerName localhost
+Invoke-Command   -Session $Session -ScriptBlock { "One" }
+Invoke-Command   -Session $Session -ScriptBlock { "Two" }
+Remove-PSSession -Session $Session
+```
+
+Your output should look like this:
+
+```text
+One
+Two
+```
+
+## Multiple Sessions
+
+So far the examples have looked at managing a single remote host, but you can also manage several at once.
+In this workshop we've prelaunched some docker containers and captured their container IDs for use as an environment variable.
+PowerShell remoting has a neat built-in option (for Windows PowerShell 5.1+) to be able to manage containers on the host, no networking required, which is what we're using in this example below:
+
+```powershell
+Invoke-Command -Session $Sessions -ScriptBlock { "This is $env:ComputerName" }
+```
+
+Your output should look like this (though the actual IDs at the end of each line are _probably_ different!):
+
+```text
+This is 8ADADC56B28D
+This is 9CA3C01950AF
+This is 6B1FD3588EA0
+```
+
+A> ### OutVariable
+A>
+A> You can use the `OutVariable` parameter to allow the output of a command to go to the pipeline *and* to save it to a variable.
+A> Be careful not to include a `$` in the name!
+
+Functionally, as far as running commands is concerned, all you need is an open PSSession - whether it's via WinRM remoting, SSH, or another methods doesn't effect how the commands are run.
+
+There's more to discuss with remoting, such as [session configurations](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_session_configurations?view=powershell-6) and [implicit remoting](https://4sysops.com/archives/using-implicit-powershell-remoting-to-import-remote-modules/), but those topics are beyond the scope of this workshop.
+
+{exercise, case-sensitive: false, id: running-remote-commands}
+
+### Exercise 15: Running Remote Commands
+
+Before answering the below questions, run this command:
+
+```powershell
+New-PSSession -ContainerID ($env:Servers -Split ',') -OutVariable Sessions
+```
+
+? What command would you use to create a new PowerShell session to connect to a remote machine named `Target.Local`?
+
+! New-PSSession -ComputerName Target.Local
+
+? If you run that command, does it error?
+
+A) Yes
+b) No
+
+? What command would you use to invoke the command `$env:USERNAME` against the `$Sessions` variable?
+
+! Invoke-Command -Session $Sessions -ScriptBlock {$env:USERNAME} ; Invoke-Command -ScriptBlock {$env:USERNAME} -Session $Sessions
+
+? How many results does running that command output?
+
+! 3
+
+? What command would you use to remotely test if the path `HKLM:\SOFTWARE\dotnet` exists in any of the nodes connected to in the `$Sessions` variable?
+
+% Remember to use `Get-Command` and `Get-Help` to find commands you don't know and figure out how to use them.
+
+! Invoke-Command -Session $Sessions -ScriptBlock {Test-Path HKLM:\SOFTWARE\dotnet}
+
+? What result is returned for that command?
+
+a) True, once
+b) False, once
+c) True, three times.
+D) False, three times.
+
+? What command would you use to remove the PowerShell sessions stored in the `$Sessions` variable?
+
+! Remove-PSSession -Session $Sessions ; $Sessions | Remove-PSSession
+
+? What command would you use to get all open PowerShell sessions in the current scope?
+
+! Get-PSSession
+
+{/exercise}
