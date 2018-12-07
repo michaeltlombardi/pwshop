@@ -7,3 +7,4 @@
 07-variables-and-operators.txt
 08-providers.txt
 09-remoting.txt
+10-modules-and-gallery.txt
