@@ -1,0 +1,133 @@
+# Modules & the PSGallery
+
+To this point in the workshop, everything we've worked on has only included commands which are 'in the box', so to speak - the commands that ship with PowerShell itself in the operating system.
+
+Behind the scenes, all of those commands actually reside in _modules_ - logical containers for groups of commands.
+Modules are how PowerShell code largely gets shipped around - there are additional modules available, written by Microsoft, by third parties (like VMWare), and by the community.
+
+You can see all of the modules currently available on your system with the `Get-Module` command:
+
+```powershell
+Get-Module -ListAvailable
+```
+
+Which chould output something like this:
+
+```text
+    Directory: C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+ModuleType Version    Name                ExportedCommands
+---------- -------    ----                ----------------
+Manifest   1.0.0.0    AppBackgroundTask   {Disable-AppBackgroundTaskDiagnosticLog, Enable-AppBackgroundTaskDiagnosticLog, S...
+Manifest   2.0.0.0    AppLocker           {Get-AppLockerFileInformation, Get-AppLockerPolicy, New-AppLockerPolicy, Set-AppL...
+Manifest   1.0.0.0    AppvClient          {Add-AppvClientConnectionGroup, Add-AppvClientPackage, Add-AppvPublishingServer, ...
+...
+```
+
+There is also a centralized location where publically available modules can be discovered: the [PowerShell Gallery](https://www.powershellgallery.com/).
+Here you can search for modules that might have commands or scripts which would be useful for you.
+
+There's a set of commands for interacting both with the gallery and with PowerShell modules which you've downloaded and installed locally.
+
+- `Get-Command -Module PowerShellGet`
+
+{exercise, case-sensitive: false, id: modules}
+
+## Exercise 16: Modules
+
+? What command would you use to convert text from YAML format to PowerShell?
+
+% Remember the approved verbs list - you've also seen a similar command for JSON earlier in this course.
+
+! ConvertFrom-Yaml
+
+? Is that command available on your machine?
+
+a) Yes
+B) No
+
+? Use `Find-Command` to search the gallery for modules containing the appropriate parameters. What command did you use?
+
+! Find-Command -Name ConvertFrom-Yaml
+
+? How many results did `Find-Command` return?
+
+! 3
+
+Install the `powershell-yaml` module to your machine using `Install-Module`. Make sure to set the `Scope` parameter to `CurrentUser`.
+
+? Run `Get-Command` again to search for the appropriate command. Is it available now?
+
+A) Yes
+b) No
+
+? Does it have cmdletbinding?
+
+% Remember, you can introspect an object's properties via the pipeline.
+
+A) Yes
+b) No
+
+? Use `Get-Command` to return all of the commands whose noun is `Yaml`. What other commands are available, in addition to `ConvertFrom-Yaml`?
+
+! ConvertTo-Yaml
+
+? Save the module `PSYaml` to the path `~`. What command did you use?
+
+! Save-Module -Name PSYaml -Path ~ ; Save-Module -Path ~ -Name PSYaml
+
+? Get the child items at `~/PSYaml` recursively. What command did you use?
+
+! Get-ChildItem -Path ~/PSYaml -Recurse ; Get-ChildItem -Recurse -Path ~/PSYaml
+
+? What is the name of the `.dll` file in that output?
+
+! YamlDotNet.dll ; YamlDotNet
+
+? Use `Get-Command` to return all of the commands belonging to the `PSYaml` module. What is the result?
+
+! Error ; Get-Command : The term 'PSYaml' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. ; get-command : The term 'PSYaml' is not recognized as the name of a cmdlet, function, script file, or operable program.
+
+Run the following command to import the module into the current runspace:
+
+```powershell
+Import-Module -Name ~/PSYaml
+```
+
+? Use `Get-Command` to return all of the commands belonging to the `PSYaml` module again. What command did you use?
+
+! Get-Command -Module PSYaml
+
+? How many results did it return?
+
+! 3
+
+? What is the value of `$env:PSModulePath`?
+
+! C:\Users\Vagrant\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+? Use the `Get-InstalledModule` command to check modules on your machine are installed from the gallery. Is PSYaml there?
+
+a) Yes
+B) No
+
+? Use `Get-PSRepository` to investigate the default gallery information. What is it's installation policy?
+
+! Untrusted
+
+? How many properties are available?
+
+! 10
+
+? Is there a method available to change the installation policy?
+
+a) Yes
+B) No
+
+{/exercise}
+
+## Note on Getting Started With the PowerShell Gallery
+
+When you're first getting started using the Gallery on other machines, using these module commands may require you to install NuGet.
+PowerShell will try to do this for you automatically.
+
+For a more in depth look at getting started with the gallery, including installing PowerShellGet on older versions of Windows, see the [Microsoft docs](https://docs.microsoft.com/en-us/powershell/gallery/installing-psget).
