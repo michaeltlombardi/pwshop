@@ -1,6 +1,6 @@
 # Introduction
 
-![Audio for this chapter](audio/01-introduction.wav)
+![Audio for this chapter](https://pwshopaudio.blob.core.windows.net/audiobook/01-introduction.wav)
 
 This is the PowerShell 101 Workshop, `pwshop`.
 It's designed to be a self-paced introduction to PowerShell fundamentals that can be completed alone or with an instructor / facillitator.
