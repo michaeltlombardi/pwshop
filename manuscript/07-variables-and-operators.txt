@@ -1,5 +1,7 @@
 # Variables & Operators
 
+[Previous Chapter]()
+
 So far in this workshop we've worked through using commands at the prompt and manipulating the output.
 But what if you need to store objects for later use?
 
@@ -171,3 +173,5 @@ And the output:
 ```text
 6
 ```
+
+[Next Chapter]()

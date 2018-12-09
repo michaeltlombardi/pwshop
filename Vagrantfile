@@ -46,24 +46,40 @@ Vagrant.configure("2") do |config|
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.hostname = "pwshop"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.boot_timeout = 180
 
   config.vm.provider "virtualbox" do |vb|
-    vb.gui = true
+    vb.gui    = true
     vb.memory = "4096"
   end
-  config.vm.provider "hyperv" do |h|
-    h.maxmemory                      = 4096
-    differencing_disk                = false
-    linked_clone                     = true
-    enable_virtualization_extensions = true
-    h.vm_integration_services        = {
+  
+  config.vm.provider "hyperv" do |hv|
+    hv.maxmemory                        = 4096
+    # hv.differencing_disk                = false
+    hv.linked_clone                     = true
+    hv.enable_virtualization_extensions = true
+    hv.vm_integration_services          = {
       guest_service_interface: true
     }
   end
 
+  # config.vm.provider "vmware_desktop" do |vmw|
+  #   vmw.gui             = true
+  #   vmw.vmx["memsize"]  = "4096"
+  #   vmw.vmx["numvcpus"] = "2"
+  # end
+
   config.vm.provision "shell", inline: <<-SHELL
+    If ([string]::IsNullOrEmpty((Get-Command -Name 'choco' -ErrorAction 'SilentlyContinue'))) {
+      Set-ExecutionPolicy Bypass -Scope Process -Force
+      Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    }
     If ([string]::IsNullOrEmpty((Get-Command -Name 'code' -ErrorAction 'SilentlyContinue'))) {
-      choco install visualstudiocode googlechrome vscode-powershell -y
+      choco install visualstudiocode vscode-powershell -y
+    }
+    If ([string]::IsNullOrEmpty((Get-Command -Name 'docker' -ErrorAction 'SilentlyContinue'))) {
+      choco install docker-desktop -y
     }
     If ((docker images) -notmatch 'Microsoft/NanoServer') {
       docker pull microsoft/nanoserver

@@ -1,5 +1,7 @@
 # Filtering & Where-Object
 
+[Previous Chapter]()
+
 One particularly good use case for the pipeline is to filter objects for further use.
 It is _best_ practice, where possible, to "filter left" - that is, to filter objects when you're querying for them rather than retrieving an unfiltered list and selecting the desired values afterward.
 
@@ -263,3 +265,5 @@ B) No
 ! 136
 
 {/exercise}
+
+[Next Chapter]()

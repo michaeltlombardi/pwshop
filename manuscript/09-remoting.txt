@@ -1,5 +1,7 @@
 # Remoting
 
+[Previous Chapter]()
+
 All of the PowerShell we've looked at so far relies on running on your local machine.
 Eventually, however, it's probable that you will need to manage another machine.
 To do so without RDPing to it will require you to use PowerShell remoting.
@@ -136,3 +138,5 @@ D) False, three times.
 ! Get-PSSession
 
 {/exercise}
+
+[Next Chapter]()

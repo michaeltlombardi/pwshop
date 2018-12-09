@@ -1,7 +1,8 @@
 # PowerShell Providers
 
-Providers are one of the ways PowerShell makes our lives easier - they allow us to use the [same set of commands](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_providers?view=powershell-6) to manage certificates, files, registry keys, and more - all without having to learn new commands for each.
+[Previous Chapter]()
 
+Providers are one of the ways PowerShell makes our lives easier - they allow us to use the [same set of commands](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_providers?view=powershell-6) to manage certificates, files, registry keys, and more - all without having to learn new commands for each.
 
 We'll start with the first command in this group that you're likely to need: `Get-ChildItem`.
 This command will search inside a container and return all of the objects it finds.
@@ -290,3 +291,5 @@ c) No, the same command with the same parameters.
 There are also several other providers, both builtin and available via additional modules.
 They can, like the three providers we've already explored, be interacted with through the `Item` commands.
 You can use the `Get-PSProvider` command to see which ones are available.
+
+[Next Chapter]()

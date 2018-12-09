@@ -1,5 +1,7 @@
 # Modules & the PSGallery
 
+[Previous Chapter]()
+
 To this point in the workshop, everything we've worked on has only included commands which are 'in the box', so to speak - the commands that ship with PowerShell itself in the operating system.
 
 Behind the scenes, all of those commands actually reside in _modules_ - logical containers for groups of commands.
@@ -131,3 +133,5 @@ When you're first getting started using the Gallery on other machines, using the
 PowerShell will try to do this for you automatically.
 
 For a more in depth look at getting started with the gallery, including installing PowerShellGet on older versions of Windows, see the [Microsoft docs](https://docs.microsoft.com/en-us/powershell/gallery/installing-psget).
+
+[Next Chapter]()

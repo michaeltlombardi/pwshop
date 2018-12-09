@@ -1,5 +1,7 @@
 # The Pipeline
 
+[Previous Chapter]()
+
 In this section you've seen that PowerShell is all about _objects_ which have **properties** and **methods**.
 With this foundational understanding of what's being used you're ready to look at the pipeline.
 
@@ -69,3 +71,5 @@ Be mindful of this when storing objects on disk in this way.
 {/answer}
 
 {/exercise}
+
+[Next Chapter]()

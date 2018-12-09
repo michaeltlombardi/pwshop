@@ -1,5 +1,7 @@
 # Commands & Discoverability
 
+[Previous Chapter]()
+
 When using PowerShell, the majority of the text you type into a console or script file will be PowerShell commands of some sort, instead of external executables.
 For this reason, it's useful to become familiar with PowerShell's `Verb-Noun` syntax, approved verbs, and some of the most common commands.
 
@@ -349,3 +351,5 @@ b) No
 3. Restart the service with a single command.
 
 {/exercise}
+
+[Next Chapter]()

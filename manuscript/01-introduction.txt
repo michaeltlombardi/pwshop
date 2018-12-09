@@ -19,3 +19,5 @@ Over the course of this workshop you will learn:
 * How to write scripts using conditionals, loops, and multiple output streams, and how to handle errors.
 
 The workshop is designed to be worked through in sequential order, later exercises build on skills acquired during earlier exercises.
+
+[Next Chapter](02-setup.txt)

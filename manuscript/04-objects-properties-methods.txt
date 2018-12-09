@@ -1,5 +1,7 @@
 # Objects, Properties, & Methods
 
+[Previous Chapter]()
+
 ## Properties
 
 So far we've been looking at single commands and their output.
@@ -293,3 +295,5 @@ Run the commands above and answer the following questions:
 ! It reorders the list ; It changes the list order ; It sorts the list
 
 {/exercise}
+
+[Next Chapter]()

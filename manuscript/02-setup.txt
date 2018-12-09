@@ -1,5 +1,7 @@
 # Setup
 
+[Previous Chapter]()
+
 For this workshop we're using a vagrant image - it is a Windows Server 2016 image with docker pre-installed.
 It is **strongly** advised that you set up this environment and test that it works prior to the workshop if _at all_ possible.
 Once the lab environment is set up you should _not_ need to download anything else.
@@ -41,3 +43,5 @@ You can _destroy_ the environment, freeing up disk space:
 You can bring the environment back up after _halting_ or _destroying_ it using the same command as when you first brought it up:
 
 * `vagrant up --provision`
+
+[Next Chapter]()
