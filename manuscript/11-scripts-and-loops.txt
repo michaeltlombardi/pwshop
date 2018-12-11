@@ -1,0 +1,723 @@
+# Writing Scripts
+
+Most of this course so far has had you writing PowerShell _at the prompt_, running each command one after the other.
+Frequently, you're going to be in a position to want a shortcut to perform several actions in sequence which you can run yourself or turn over to coworkers.
+
+You're going to want to write scripts.
+
+This is actually relatively straightforward.
+First, we need to create a file with the extension `ps1`.
+
+```powershell
+New-Item ~/pwshop -ItemType Directory
+New-Item ~/pwshop/example.ps1
+```
+
+For this workshop we're going to be looking at editing our scripts using [Visual Studio Code](https://code.visualstudio.com/).
+Running the code to the side will create the script file and open up VSCode to the appropriate folder.
+
+Open the script file we created.
+It's empty by default (because we didn't specify a value).
+
+```powershell
+code ~/pwshop
+```
+
+## Conditionals: If, ElseIf, & Else
+
+Sometimes in PowerShell you only want to execute a command if a certain condition is met.
+You can do this with an `if` statement.
+
+An `if` statement includes a conditional (the code inside the parentheses) and a scriptblock (the code inside the curly braces).
+The scriptblock will execute if and _only if_ the conditional evaluates to true.
+
+```powershell
+$SpoolerStatus = Get-Service -Name spooler |
+  Select-Object -ExpandProperty Status
+If ($SpoolerStatus -ne "Stopped") { Stop-Service -Name Spooler -PassThru }
+```
+
+```text
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Spooler            Print Spooler
+```
+
+You can use an `elseif` statement after an `if` statement.
+You would usually do this to execute code where the commands to execute depend on the status of some object.
+Note that the `elseif` is **only** evaluated if the `if` statement's condition is false - if it evaluates to true, the `elseif` isn't even evaluated.
+
+```powershell
+$SpoolerStatus = Get-Service -Name spooler |
+  Select-Object -ExpandProperty Status
+If ($SpoolerStatus -ne "Stopped") {
+  Stop-Service -Name Spooler -PassThru
+} ElseIf ($SpoolerStatus -eq "Stopped") {
+  Start-Service -Name Spooler -PassThru
+}
+```
+
+```text
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Spooler            Print Spooler
+```
+
+If you add an `else` statement to the end of an `if` statement (with or without a preceding `elseif`)
+As with the `elseif`, this block only runs if all proceeding statements have conditionals which evaluate to false.
+
+```powershell
+$SpoolerStatus = Get-Service -Name spooler |
+  Select-Object -ExpandProperty Status
+If ($SpoolerStatus -eq "Stopped") {
+  Start-Service -Name Spooler -PassThru
+} ElseIf ($SpoolerStatus -ne "Running") {
+  "This message won't display"
+} Else {
+  Restart-Service -Name Spooler -PassThru
+}
+```
+
+```text
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Spooler            Print Spooler
+```
+
+## Conditionals: Switches
+
+If you find yourself writing long series of `elseif`s to account for numerous possible values, there's a good chance you're actually looking for a `case` statement.
+A `case` statement allows you to execute a different scriptblock depending on the value of the expression in the parentheses.
+The `Default` statement seen at the bottom is special - the scriptblock associated with it will run if and only if none of the other options are what the expression evaluates to.
+
+```powershell
+# Do not run the code in this example.
+# It will return nothing and is for reference only.
+
+$Pet = Get-Pet -Family Lombardi
+If ($Pet.Category -eq 'Dog') {
+  'woof'
+} ElseIf ($Pet.Category -eq 'Cat') {
+  'meow'
+} ElseIf ($Pet.Category -eq 'Snake') {
+  'hiss'
+} Else { 'honk' }
+
+Case ($Pet.Category) {
+  'Dog'   { 'woof' }
+  'Cat'   { 'meow' }
+  'Snake' { 'hiss' }
+  Default { 'honk' }
+}
+```
+
+{exercise, case-sensitive: false, id: conditionals}
+## Exercise 17: Conditionals
+
+In the VSCode editor, open the `example.ps1` file.
+Between each step below, run the file.
+You can run the script from the prompt in VSCode which will automatically open using the following code:
+
+```powershell
+& ~/pwshop/example.ps1
+```
+
+? Write an `If` statement to output `Red` if 1 is greater than 3. Enter the script code below.
+
+{answer}
+If (1 -gt 3) {
+  "Red"
+}
+{/answer}
+
+? Add an `elseif` statement to output `Blue` if 1 is less than 5. Enter the full script code below.
+
+{answer}
+If (1 -gt 3) }
+  "Red"
+} ElseIf (1 -lt 5) {
+  "Blue"
+}
+{/answer}
+
+? Add an `else` statement to output `Green`. Enter the full script code below.
+
+{answer}
+If (1 -gt 3) }
+  "Red"
+} ElseIf (1 -lt 5) {
+  "Blue"
+} Else {
+  "Green"
+}
+{/answer}
+
+? Change the `If` statement's conditional operator to less than. Enter the Full script code below.
+
+{answer}
+If (1 -lt 3) }
+  "Red"
+} ElseIf (1 -lt 5) {
+  "Blue"
+} Else {
+  "Green"
+}
+{/answer}
+
+Replace the existing code with the following lines:
+
+```powershell
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = $Foods | Get-Random -Count 1
+```
+
+? Add a blank line and then a case statement which will output the category of food (fruit, pastry, pasta, meat, vegetable) using the following template for the output (replacing `fruit` with the appropriate category): `"$Food is a fruit"` - enter the full script below.
+
+{answer}
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = $Foods | Get-Random -Count 1
+
+Case ($Food) {
+  "Apple"     { "$Food is a fruit" }
+  "Cookie"    { "$Food is a pastry" }
+  "Spaghetti" { "$Food is a pasta" }
+  "Steak"     { "$Food is a meat" }
+  "Broccoli"  { "$Food is a vegetable" }
+}
+{/answer}
+
+? Rerun the script a few times. Do you always get the same result?
+
+a) Yes
+B) No
+
+{/exercise}
+
+## Loops: ForEach
+
+In scripts you'll often want to repeat an action several times.
+We do this by using loops.
+
+For example, the `foreach` loop allows you repeat once for each item in a collection.
+In the example to below we loop through the list of services whose display name includes `windows` in it.
+The `$Service` variable name is arbitrary, it would also have worked if we specified `$a`.
+It's just good practice to use meaningful variable names.
+
+```powershell
+ForEach ($Service in (Get-Service -DisplayName "*windows*")) {
+  $Service.DisplayName
+}
+```
+
+```text
+Windows Audio Endpoint Builder
+Windows Audio
+Docker for Windows Service
+...
+```
+
+Note that we didn't have to define the collection _before_ the loop.
+We could've assigned those results to a variable ahead of time and used that to the right of `in`.
+
+## Loops: For
+
+Sometimes you'll want to use a loop that will execute a certain number of times.
+For that you can use a `For` loop.
+
+```powershell
+For ($i = 0 ; $i -lt 10 ; $i++) {
+  "I am $i"
+}
+```
+
+```text
+I am 0
+I am 1
+I am 2
+...
+```
+
+Notice that the expression in the parentheses of the `For` loop is broken up by semicolons;
+these end the pipeline and execute the following command.
+They're only necessary if you want to run multiple commands on a single line.
+
+For `For` loops, this follows a special pattern:
+
+- The first expression (before the first `;`) defines the starting value.
+- The second expression defines the condition which, when **false** will cause the loop to terminate.
+- The third expression defines what happens after each iteration of the loop.
+
+## Loops: While
+
+You can use a `While` loop to execute code if and only if a condition is true, and repeat only so long as the condition is true.
+Note that if the script gets to a `While` loop and the condition is false, it will _not_ run the code in the loop, not even once.
+
+```powershell
+$i = 1
+While ($Truthy -ne $true) {
+  "I am $i"
+  $i *= 2
+  If ($i -gt 8) { $Truthy = $true }
+}
+While ($Truthy -ne $true) {
+  "I never display"
+}
+```
+
+```text
+I am 1
+I am 2
+I am 4
+I am 8
+```
+
+## Loops: Do-While, Do-Until
+
+You can use `Do-While` loops similarly to `While` loops, except that it will _always_ execute at least once.
+A `Do-Until` loop is identical to a `Do-While` except that the loop will continue to execute until a condition is met instead of executing while a condition is true.
+
+
+```powershell
+$i = 1
+Do {
+  "I am $i"
+  $i *= 2
+} While ($i -lt 0)
+Do {
+  "I am $i"
+  $i *= 2
+} Until ($i -gt 8)
+```
+
+```text
+I am 1
+I am 2
+I am 4
+I am 8
+```
+
+{exercise, case-sensitive: false, id: loops}
+## Exercise 18: Loops
+
+In the VSCode editor, open the `example.ps1` file and clear it of any existing content.
+Between each step below, run the file by running the command below in the terminal of the editor:
+
+```powershell
+& ~/pwshop/example.ps1
+```
+
+? Add a `for` loop that write the value of `$i` times itself, executing only so long as `$i` is less than 5. `$i` should begin at `0` and increment by one after each pass. Paste the full script in the box below:
+
+{answer}
+For ($i = 0; $i -lt 5; $i++) {
+  $i * $i
+}
+{/answer}
+
+? Enter the output of the script below:
+
+{answer}
+1
+4
+9
+16
+25
+{/answer}
+
+Add a blank line and then the following code:
+
+```powershell
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+```
+
+? Add a `ForEach` loop, iterating over the `$Foods` collection and outputting the food each time. Write the full script into the box below:
+
+{answer}
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+ForEach ($Food in $Foods) {
+  $Food
+}
+{/answer}
+
+Place the following case statement in the `ForEach` loop, replacing the code currently in it:
+
+```powershell
+Case ($Food) {
+  "Apple"     { "$Food is a fruit" }
+  "Cookie"    { "$Food is a pastry" }
+  "Spaghetti" { "$Food is a pasta" }
+  "Steak"     { "$Food is a meat" }
+  "Broccoli"  { "$Food is a vegetable" }
+}
+```
+
+? Enter the results below:
+
+{answer}
+Apple is a fruit
+Cookie is a pastry
+Spaghetti is a pasta
+Steak is a meat
+Broccoli is a vegetable
+{/answer}
+
+Replace the code in the script with the following:
+
+```powershell
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = $Foods | Get-Random
+```
+
+? Add a `while` loop which runs so long as `$Food` does not equal `Broccoli`. Each iteration the loop should output the value of `$Food` and then set `$Food` to a random entry in `$Foods` again. Enter the full script into the box below:
+
+{answer}
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = $Foods | Get-Random
+While ($Food -ne "Broccoli") {
+  $Food = $Foods | Get-Random
+}
+{/answer}
+
+Modify the line before the `while` loop to the following code:
+
+```powershell
+$Food = 'Broccoli'
+```
+
+? Ensure the `while` loop outputs the current food during each iteration _before_ updating `$Food`. Does it ever output anything?
+
+a) Yes
+B) No
+
+? Modify the `while` loop into a `do-while` loop and ensure that `$food` is output before it is changed in each iteration. Place the full script in the box below:
+
+{answer}
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = 'Broccoli'
+Do {
+  $Food
+  $Food = $Foods | Get-Random
+} While ($Food -ne "Broccoli")
+{/answer}
+
+? What is the first output?
+
+a) Apple
+b) Cookie
+c) Spaghetti
+d) Steak
+E) Broccoli
+
+? Does broccoli show up in the results more than once?
+
+a) Yes
+B) No
+
+? Modify the `do-while` loop into a `do-until` loop and place the full script into the box below:
+
+{answer}
+$Foods = 'Apple', 'Cookie', 'Spaghetti', 'Steak', 'Broccoli'
+$Food = 'Broccoli'
+Do {
+  $Food
+  $Food = $Foods | Get-Random
+} Until ($Food -ne "Broccoli")
+{/answer}
+
+{/exercise}
+
+## Output Streams
+
+Now that you're looking to write a script it's worth knowing that PowerShell has mutliple output streams.
+Place the powershell code to the right into your script file, replacing all the code currently in it.
+
+```powershell
+[cmdletbinding()]
+Param()
+
+Process {
+  Write-Output      "This is an output message"
+  Write-Debug       "This is a debug message"
+  Write-Error       "This is an error message"
+  Write-Host        "This is a host message"
+  Write-Information "This is an informational message"
+  Write-Verbose     "This is a verbose message"
+  Write-warning     "This is a warning message"
+}
+```
+
+To run the script file, call it from the powershell prompt:
+
+```powershell
+~/pwshop/example.ps1
+```
+
+What did you expect to see?
+Which output messages do you actually see?
+
+Run it again, but this time specify the `Verbose` flag.
+You should see a new message.
+The verbose stream can be used to send messages about what is happening which aren't _neccessary_ for the user to see, but which are valuable context.
+In PowerShell it is _best practice_ to only ever emit output objects from a script or command, not status messages as normal output.
+
+Run it again with the `Verbose` flag, but this time assign the output to a variable called `$Captured`.
+Notice that the output message is missing from the text at the terminal - but if you look at `$Captured`, there the message is.
+Remember that what is assigned to a variable by the `=` operator is the _output_ of a command or expression.
+
+Notice _also_ that the host message was not captured - this is because that text is not written to any stream, it goes only to the host program.
+Unlike other streams it can't be [redirected or captured](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_redirection?view=powershell-6).
+For this reason you are advised to avoid using `Write-Host` for the most part.
+
+Run the script again, but this time specify the `Debug` flag.
+This time you should see a message _and_ get asked to confirm whether or not you want to continue processing the script.
+This is _very_ useful for working through scripts that are malfunctioning.
+
+Run the script again, but this time specify `Continue` as the value for the `InformationAction` parameter.
+You should see the information stream message now.
+
+Run the script again, but this time specify `SilentlyContinue` as the value for the `ErrorAction` parameter.
+You should not see the error message now.
+However, the script still errored!
+You surpressed the error _only_ in the console output!.
+
+## Error Handling
+
+In PowerShell, as in all coding, errors are inevitable.
+There's a few things we need to be aware of in PowerShell.
+
+The first is that there's a difference between terminating and non terminating errors - some errors will prevent further execution of code, and we call these _terminating_ errors.
+
+For a really good overview and explanation of error handling, see [this blog post by Kevin Marquette](https://kevinmarquette.github.io/2017-04-10-Powershell-exceptions-everything-you-ever-wanted-to-know/).
+For the purposes of this workshop we're going to learn via a few examples but not go _too_ deep into terminology.
+
+```powershell
+Try {
+  "Message 1"
+  Write-Error "This is non-terminating"
+  "Message 2"
+  If (((Get-Random) % 2) -eq 0) {
+    throw [System.ArgumentNullException]::New('a null reference was invalidly passed to a method')
+  }
+  "Message 3"
+} Catch [System.ArgumentNullException] {
+  "Message for caught exception"
+} Finally {
+  "Displays whether the terminating error is generated and caught"
+}
+```
+
+You can use the `Write-Error` command to create a new error.
+You might do this when none of the PowerShell commands you've called have errored, but the script itself has a problem and will malfunction.
+You may _not_ want this error to be terminating - for example, if you're processing multiple objects and one of them fails, you may want to write an error _and keep processing_ the rest of the objects.
+
+If you want to throw a terminating error you can use the `Throw` command.
+You might want to do this in cases where a single failure will cause cascading issues in future parts of the script.
+
+You can use a `try-catch` block to handle terminating errors in your PowerShell code.
+This allows you to manage your code and potential errors proactively - for example, if you don't have permissions to modify a service, write a reasonable message to the console and request alternate credentials to continue the script.
+
+You can add a `finally` block after a `try` or `try-catch` to run a block of code _regardless_ of whether a terminating error is thrown.
+This is often used to close connections or cleanup the environment from a run.
+
+Unfortunately, catching exceptions requires a bit of foreward thinking and identifying what the exception type will be.
+Luckily, [Kevin Marquette has that covered too](https://kevinmarquette.github.io/2017-04-07-all-dotnet-exception-list/?utm_source=blog&utm_medium=blog&utm_content=crosspost) with a huge list of exceptions.
+
+Open the `example.ps1` file and replace its existing content with the code to the right, then run it multiple times.
+It will randomly determine a number and, if that random number is even, it will throw a terminating error.
+Note that, if the terminating is _not_ thrown, `Message 3` _will_ display and the `caught` message will not.
+The first two messages and the message in the `Finally` block will _always_ display.
+
+{exercise, case-sensitive: false, id: error-handling}
+## Exercise 19: Error Handling
+
+In the VSCode editor, open the `example.ps1` file and clear it of any existing contents, replacing it with the following:
+
+```powershell
+[cmdletbinding()] Param()
+Throw "This is a terminating error"
+Write-Error "This is not a terminating error"
+```
+
+```powershell
+~/pwshop/example.ps1
+```
+
+? Which message(s) are displayed?
+
+A) This is a terminating error
+b) This is not a terminating error
+c) Both
+d) Error: This is not a terminating error
+
+? Edit the script, placing the `Write-Error` line above the `Throw`. Which message(s) are displayed now?
+
+a) This is a terminating error
+b) This is not a terminating error
+C) Both
+d) Error: This is not a terminating error
+
+Replace the `Throw` line with the following code:
+
+```powershell
+$Message = 'There is an attempt to divide a number by zero'
+Throw [System.DivideByZeroException]::New($Message)
+```
+
+? Add a `Try` to the script, placing the `Write-Error` and `Throw` lines inside it and a`Catch` statement which outputs `Oops!`. Place the full script in the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+Try {
+  Throw [System.DivideByZeroException]::New($Message)
+  Write-Error "This is not a terminating error"
+} Catch {
+  "Oops!"
+}
+{/answer}
+
+? What is the output?
+
+! Oops!
+
+? Add another `Catch` statement after the `Try` to catch the `System.DivideByZeroException` exception. In this block, set `$i` equal to `0`. Place the full script in the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+Try {
+  Throw [System.DivideByZeroException]::New($Message)
+  Write-Error "This is not a terminating error"
+} Catch [System.DivideByZeroException] {
+  $i = 0
+} Catch {
+  "Oops!"
+}
+{/answer}
+
+? What's the output now?
+
+A) Nothing
+b) 0
+c) Oops!
+d) Error: This is not a terminating error
+
+? Add a `Finally` statement which outputs `$i`. Place the full script into the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+Try {
+  Throw [System.DivideByZeroException]::New($Message)
+  Write-Error "This is not a terminating error"
+} Catch [System.DivideByZeroException] {
+  $i = 0
+} Catch {
+  "Oops!"
+} Finally {
+  $i
+}
+{/answer}
+
+? What's the output now?
+
+a) Nothing
+B) 0
+c) Oops!
+d) Error: This is not a terminating error
+
+? In the `Try` block, make the `Throw` statement execute only if `$i` is greater than `10`. Place the full script into the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+Try {
+  If ($i -gt 10) {
+    Throw [System.DivideByZeroException]::New($Message)
+  }
+  Write-Error "This is not a terminating error"
+} Catch [System.DivideByZeroException] {
+  $i = 0
+} Catch {
+  "Oops!"
+} Finally {
+  $i
+}
+{/answer}
+
+? What's the output now?
+
+a) Nothing
+b) 0
+c) Oops!
+D) Error: This is not a terminating error
+
+? Suppress the output of `Write-Error`. What is the full version of `Write-Error` including any new parameters and their values?
+
+! Write-Error "This is not a terminating Error" -ErrorAction SilentlyContinue
+
+At the beginning of the `Try` block, add the following line of code:
+
+```powershell
+$i = 1..20 | Get-Random -Count 1
+```
+
+? After the `If` statement add an `Else` statement which sets `$i` equal to itslef divided by 2. Place the full script into the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+$i = 1..20 | Get-Random -Count 1
+Try {
+  If ($i -gt 10) {
+    Throw [System.DivideByZeroException]::New($Message)
+  } Else {
+    $i /= 2 # This also works: $i = $i / 2
+  }
+  Write-Error "This is not a terminating error" -ErrorAction SilentlyContinue
+} Catch [System.DivideByZeroException] {
+  $i = 0
+} Catch {
+  "Oops!"
+} Finally {
+  $i
+}
+{/answer}
+
+? If `$i` is randomly selected to be `5`, what will the output be?
+
+! 2.5
+
+? If `$i` is randomly selected to be `14`, what will the output be?
+
+! 0
+
+? Modify the code in the `Else` statement to loop until `$i` is less than `1`. Place the full script into the box below:
+
+{answer}
+[cmdletbinding()] Param()
+$Message = 'There is an attempt to divide a number by zero'
+$i = 1..20 | Get-Random -Count 1
+Try {
+  If ($i -gt 10) {
+    Throw [System.DivideByZeroException]::New($Message)
+  } Else {
+    Do {
+      $i /= 2 # This also works: $i = $i / 2
+    } Until ($i -lt 1)
+  }
+  Write-Error "This is not a terminating error" -ErrorAction SilentlyContinue
+} Catch [System.DivideByZeroException] {
+  $i = 0
+} Catch {
+  "Oops!"
+} Finally {
+  $i
+}
+{/answer}
+
+? If `$i` is randomly selected to be `3`, what will the output be?
+
+! 0.75
+
+{/exercise}

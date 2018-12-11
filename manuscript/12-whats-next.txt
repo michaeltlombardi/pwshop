@@ -1,0 +1,38 @@
+# What's Next?
+
+You've learned a lot during this course!
+At this point you've got most of the fundamentals of PowerShell in your hands.
+You know how to find commands to do what you want, how to figure out how they work, how to introspect objects for additional methods and properties, how to filter objects, how to use the pipeline, how to assign variables and operate on them, how to use different providers, how to remotely manage machines and how to find commands that aren't available on your system, how to write scripts that use conditionals and loops and multiple output streams and how to handle errors.
+
+This sets you up for a _lot_ of success.
+Most of the rest of PowerShell is going to be a widening and deepening of the skills you've learned this far - how to write better scripts, how to add documentation, how to write reusable code, how to package that code up for other folks to use, how to use source control and configuration management.
+
+To that end, here's a few challenges and a _lot_ of resources:
+
+- Write a script to replace a manual task you currently have - clearing disk space, adding a user, restarting a service, finding out whether an app pool is running, whatever - just pick some task you currently do by hand or in the GUI and write a script to do it.
+- Research and write a single advanced function using the resources below:
+  - [About Advanced Functions (MS Docs)](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced?view=powershell-6)
+  - [Understanding Advanced Functions in Powershell](https://blogs.technet.microsoft.com/heyscriptingguy/2015/07/09/understanding-advanced-functions-in-powershell/)
+  - [PowerShell Functions: Best Practices](http://ramblingcookiemonster.github.io/Building-PowerShell-Functions-Best-Practices/)
+- Use Pester to write tests for one script or function:
+  - [Pester Wiki](https://github.com/pester/Pester/wiki/Pester)
+  - [The Pester Book](https://leanpub.com/pesterbook)
+- Use PowerShell Desired State Configuration to manage a service or application - doesn't have to be for production, just find something to configure for desired state.
+  - [DSC Quick Start (MS Docs)](https://docs.microsoft.com/en-us/powershell/dsc/quickstart)
+  - [Getting Started with DSC Course (MS Virtual Academy)](https://mva.microsoft.com/en-us/training-courses/getting-started-with-powershell-desired-state-configuration-dsc-8672)
+- Read the following books:
+  - [PowerShell 101](https://leanpub.com/powershell101)
+  - [Learn Windows PowerShell in a Month of Lunches](https://www.amazon.com/Learn-Windows-PowerShell-Month-Lunches/dp/1617291080)
+  - [Learn PowerShell Toolmaking in a Month of Lunches](https://www.amazon.com/Learn-PowerShell-Toolmaking-Month-Lunches/dp/1617291161)
+  - [Learning PowerShell DSC](https://www.amazon.com/Learning-PowerShell-DSC-deployment-configuration/dp/1787287246)
+
+> ## Postscript:
+>
+> Hey, folks!
+> This course has, to this point, accomplished everything I set out to do with it initially - but there's always more we can add and cover.
+> Send me feedback, drop me a note, tweet at me, whatever - if you want more content (like the topics I listed above), let me know - there's no good reason I can't just extend this course and give you more to work on and learn!
+>
+> I hope it's been as enjoyable and rewarding for you to work through as it has been for me to write!
+> I appreciate you and look forward to interacting with you in the community!
+>
+> Cheers!
