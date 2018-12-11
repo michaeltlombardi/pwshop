@@ -19,7 +19,7 @@ You must have Vagrant and a hypervisor (Hyper-V or VirtualBox) installed.
 1. Download the `Vagrantfile` from [this link](https://gitlab.com/michaeltlombardi/pwshop/raw/master/Vagrantfile?inline=false) into a folder on your machine.
    * If it appended the `.txt` extension to the file, remove it.
      The file should just be `Vagrantfile`, no extension.
-2. Open a terminal, navigate to the folder where you saved the `VagrantFile`, and run the command below:
+2. Open a terminal [with administrator privileges](https://www.thewindowsclub.com/how-to-open-an-elevated-powershell-prompt-in-windows-10), navigate to the folder where you saved the `VagrantFile`, and run the command below:
    * `vagrant up --provision`
 3. This will download and spin up the lab machine for this workshop and get you ready to learn some PowerShell!
 
