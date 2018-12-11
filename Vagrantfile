@@ -46,6 +46,7 @@ Vagrant.configure("2") do |config|
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.hostname = "pwshop"
+  config.vm.box_version = "1809.0.0"
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
