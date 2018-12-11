@@ -8,3 +8,5 @@
 08-providers.txt
 09-remoting.txt
 10-modules-and-gallery.txt
+11-scripts-and-loops.txt
+12-whats-next.txt
