@@ -87,9 +87,9 @@ Functionally, as far as running commands is concerned, all you need is an open P
 
 There's more to discuss with remoting, such as [session configurations](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_session_configurations?view=powershell-6) and [implicit remoting](https://4sysops.com/archives/using-implicit-powershell-remoting-to-import-remote-modules/), but those topics are beyond the scope of this workshop.
 
-{exercise, case-sensitive: false, id: running-remote-commands}
+{exercise, case-sensitive: false, id: 16-running-remote-commands}
 
-### Exercise 15: Running Remote Commands
+### Exercise 16: Running Remote Commands
 
 Before answering the below questions, run this command:
 

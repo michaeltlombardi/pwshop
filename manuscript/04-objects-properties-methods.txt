@@ -91,9 +91,9 @@ I>
 I> Some objects will have *hidden* properties. You can use the `Force` parameter on `Select-Object` and `Get-Member` to display them.
 I> This won't *usually* be necessary.
 
-{exercise, case-sensitive: false, id: service-properties}
+{exercise, case-sensitive: false, id: 04-service-properties}
 
-## Exercise 4: Service Properties
+## Exercise 04: Service Properties
 
 Remember that you can use `Get-Service` to retrieve services; do so to retrieve the print spooler service.
 
@@ -195,9 +195,9 @@ So that gives us back some interesting information about the `Module` parameter:
 * We see that it has attributes for belonging to all parameter sets and for having an alias, both of which we would expect given the values in `ParameterSets` and `Aliases`.
 * We see that it is _not_ a switch parameter, which makes sense as it accepts input and is not a toggle.
 
-{exercise, case-sensitive: false, id: file-methods}
+{exercise, case-sensitive: false, id: 05-file-methods}
 
-## Exercise 5: File Methods
+## Exercise 05: File Methods
 
 Create a new file using the `New-Item` command.
 You can retrieve information about a file using the `Get-Item` command.
@@ -262,9 +262,9 @@ There's a few different commands you can do to change the output format:
 * `Out-Gridview` isn't strictly a formatting command, but it creates a useful popout window with the objects in it.
   In the gridview you can sort and filter through the output.
 
-{exercise, case-sensitive: false, id: formats-and-views}
+{exercise, case-sensitive: false, id: 06-formats-and-views}
 
-## Exercise 6: Formats and Views
+## Exercise 06: Formats and Views
 
 ```powershell
 Get-Command -Verb 'Format'

@@ -35,9 +35,9 @@ We'll go through each step one by one:
    Note that `Out-File` does not, itself, emit any output.
    Because there is no output we cannot chain any further commands to the end of this pipeline.
 
-{exercise, case-sensitive: false, id: pipeline-chaining}
+{exercise, case-sensitive: false, id: 07-pipeline-chaining}
 
-## Exercise 7: Pipeline Chaining
+## Exercise 07: Pipeline Chaining
 
 In this exercise we're going to reverse the flow from the earlier example.
 Make sure you _actually run_ the example in your prompt before starting this exercise.

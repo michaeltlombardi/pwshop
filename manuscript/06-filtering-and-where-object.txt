@@ -90,8 +90,8 @@ See the table below for the list of operators and what they mean.
 "1" -is [int]
 ```
 
-{exercise, case-sensitive: false, id: equality-operators}
-## Exercise 8: Equality Operators
+{exercise, case-sensitive: false, id: 08-equality-operators}
+## Exercise 08: Equality Operators
 
 ? How would you represent five is less than 10 in PowerShell?
 
@@ -116,9 +116,9 @@ B) No
 
 {/exercise}
 
-{exercise, case-sensitive: false, id: matching-operators}
+{exercise, case-sensitive: false, id: 09-matching-operators}
 
-## Exercise 9: Matching Operators
+## Exercise 09: Matching Operators
 
 ? Which of the following strings matches the pattern "^P.ck.+": "Peter", "Piper", "Picked", "Peck", "Pickled", "Peppers"
 
@@ -147,7 +147,7 @@ D) Picked, Peck, Pickled, Peppers
 
 {/exercise}
 
-{exercise, case-sensitive: false, id: containment-operators}
+{exercise, case-sensitive: false, id: 10-containment-operators}
 
 ## Exercise 10: Containment Operators
 
@@ -226,7 +226,7 @@ In the example above you might notice some interesting things we haven't seen be
 You can use the `FilterScript` parameter _instead of_ `Property` and `Value`, the way we've used `Where-Object` up until now.
 They are _mutually exclusive_ parameters.
 
-{exercise, case-sensitive: false, id: filterscript}
+{exercise, case-sensitive: false, id: 11-filterscript}
 
 ## Exercise 11: FilterScript
 

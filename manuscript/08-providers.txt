@@ -43,7 +43,7 @@ The same command works across three completely different providers - it returned
 
 Similarly, the rest of the `*-Item*` commands (you can use `Get-Command` to retrieve the full list) can be used to interact with those items.
 
-{exercise, case-sensitive: false, id: files-and-folders}
+{exercise, case-sensitive: false, id: 13-files-and-folders}
 
 ## Exercise 13: Files and Folders
 
@@ -160,9 +160,9 @@ Use the command `Pop-Location`.
 
 {/exercise}
 
-{exercise, case-sensitive: false, id: registry-keys}
+{exercise, case-sensitive: false, id: 14-registry-keys}
 
-## Exercise 13: Registry Keys
+## Exercise 14: Registry Keys
 
 Run the following commands:
 
@@ -222,9 +222,9 @@ Remove-Item -Path HKCU:\pwshop -Recurse
 
 {/exercise}
 
-{exercise, case-sensitive: false, id: certificates}
+{exercise, case-sensitive: false, id: 15-certificates}
 
-## Exercise 14: Certificates
+## Exercise 15: Certificates
 
 Run the following commands:
 

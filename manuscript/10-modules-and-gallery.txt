@@ -30,9 +30,9 @@ There's a set of commands for interacting both with the gallery and with PowerSh
 
 - `Get-Command -Module PowerShellGet`
 
-{exercise, case-sensitive: false, id: modules}
+{exercise, case-sensitive: false, id: 17-modules}
 
-## Exercise 16: Modules
+## Exercise 17: Modules
 
 ? What command would you use to convert text from YAML format to PowerShell?
 

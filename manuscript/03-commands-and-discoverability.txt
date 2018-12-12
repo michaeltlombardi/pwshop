@@ -22,9 +22,9 @@ You wouldn't expect that a `Get-SomeObject` command would do anything but retrie
 
 T> For the rest of this workshop, you may want to keep the list of approved verbs open.
 
-{exercise, case-sensitive: false, id: get-verb}
+{exercise, case-sensitive: false, id: 01-get-verb}
 
-### Exercise 1: Get-Verb
+### Exercise 01: Get-Verb
 
 You can retrieve the available verbs (though not their meanings) from the PowerShell prompt:
 
@@ -106,9 +106,9 @@ This is the most common way we're going to use commands at the prompt, by passin
 
 With that in mind, time for an exercise!
 
-{exercise, case-sensitive: false, id: using-parameters}
+{exercise, case-sensitive: false, id: 02-using-parameters}
 
-## Exercise 2: Using Parameters
+## Exercise 02: Using Parameters
 
 ### No Parameters
 
@@ -285,9 +285,9 @@ Get-Help -Name Get-Help -Online
 
 What parameter would you add to show examples? To show the full help?
 
-{exercise, case-sensitive: false, id: getting-help}
+{exercise, case-sensitive: false, id: 03-getting-help}
 
-## Exercise 3: Getting Help
+## Exercise 03: Getting Help
 
 ### Getting Help for Get-Command
 
