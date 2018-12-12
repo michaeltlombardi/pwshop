@@ -52,7 +52,7 @@ A>
 A> Sometimes it is easier to read and understand code that uses methods rather than the arithmetic operators.
 A> This is especially true in cases where the arithmetic operators are being used in way that might not be easy to guess.
 
-{exercise, case-sensitive: false, id: arithmetic-operators}
+{exercise, case-sensitive: false, id: 12-arithmetic-operators}
 
 ## Exercise 12: Arithmetic Operators
 

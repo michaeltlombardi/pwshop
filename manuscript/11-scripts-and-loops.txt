@@ -111,8 +111,8 @@ Case ($Pet.Category) {
 }
 ```
 
-{exercise, case-sensitive: false, id: conditionals}
-## Exercise 17: Conditionals
+{exercise, case-sensitive: false, id: 18-conditionals}
+## Exercise 18: Conditionals
 
 In the VSCode editor, open the `example.ps1` file.
 Between each step below, run the file.
@@ -296,8 +296,8 @@ I am 4
 I am 8
 ```
 
-{exercise, case-sensitive: false, id: loops}
-## Exercise 18: Loops
+{exercise, case-sensitive: false, id: 19-loops}
+## Exercise 19: Loops
 
 In the VSCode editor, open the `example.ps1` file and clear it of any existing content.
 Between each step below, run the file by running the command below in the terminal of the editor:
@@ -527,8 +527,8 @@ It will randomly determine a number and, if that random number is even, it will 
 Note that, if the terminating is _not_ thrown, `Message 3` _will_ display and the `caught` message will not.
 The first two messages and the message in the `Finally` block will _always_ display.
 
-{exercise, case-sensitive: false, id: error-handling}
-## Exercise 19: Error Handling
+{exercise, case-sensitive: false, id: 20-error-handling}
+## Exercise 20: Error Handling
 
 In the VSCode editor, open the `example.ps1` file and clear it of any existing contents, replacing it with the following:
 
