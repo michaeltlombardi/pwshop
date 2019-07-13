@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "gusztavvargadr/w16s-de"
+  config.vm.box = "gusztavvargadr/docker-windows"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.hostname = "pwshop"
-  config.vm.box_version = "1809.0.0"
+  config.vm.box_version = "1809.0.1906-enterprise-windows-server-1809-standard"
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
@@ -66,11 +66,11 @@ Vagrant.configure("2") do |config|
     If ([string]::IsNullOrEmpty((Get-Command -Name 'code' -ErrorAction 'SilentlyContinue'))) {
       choco install visualstudiocode googlechrome vscode-powershell -y
     }
-    If ((docker images) -notmatch 'Microsoft/NanoServer') {
-      docker pull microsoft/nanoserver
+    If ((docker images) -notmatch 'nanoserver') {
+      docker pull mcr.microsoft.com/windows/nanoserver:1809
     }
     If ([string]::IsNullOrEmpty($env:Servers)) {
-      1..3 | ForEach-Object -Process { docker run -d -it --name="server0$_" microsoft/nanoserver }
+      1..3 | ForEach-Object -Process { docker run -d -it --name="server0$_" mcr.microsoft.com/windows/nanoserver:1809 }
 
       $Server01 = docker ps --no-trunc -qf "name=server01"
       $Server02 = docker ps --no-trunc -qf "name=server02"
